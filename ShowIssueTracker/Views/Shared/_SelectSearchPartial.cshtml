@@ -1,0 +1,104 @@
+﻿
+<script>
+    ///////////////////////////////////////////////////////////////
+
+   var selectSearch =  function (url, fieldId, tag, childId) {
+        $(fieldId).select2({
+            id: function (e) { return e.id },
+            ajax: {
+                url:url,
+                dataType: 'json',
+                delay: 250,
+                quietMillis: 200,
+                data: function (params) {
+                    return {
+                        keyword: params.term, // search term
+                        page: 1
+                    };
+                },
+                processResults: function (data, params) {
+                    $('#placeholder').empty();
+                    params.page = params.page || 1;
+                    //$('.select2-results__options').addClass('collection');
+                    return {
+                        
+                          results: data
+                    };
+
+                },
+                
+                cache: true
+            },
+
+            escapeMarkup: function (markup) { return markup; },
+            allowClear: true,
+            placeholder: {
+                id: "0",
+                placeholder: ""
+            },
+            minimumInputLength: 0,
+         //   multiple:multiple,
+            templateResult: formatRepo,
+            templateSelection: formatRepoSelection,
+
+            tags: tag,
+                createTag: function (params) {
+                    return {
+                        id: params.term,
+                        text: params.term,
+
+                        newOption: true
+                    }
+            }
+        });
+       $(fieldId).on('select2:unselecting', function () {
+           if (childId!=null) {
+               $(childId).val("").trigger("change");
+             
+               }
+            $(fieldId).one('select2:opening', function(ev) {
+                ev.preventDefault();
+            });
+        });
+       $(fieldId).on('select2:selecting', function () {
+           if (childId!=null) {
+               $(childId).val("").trigger("change");
+             
+           }
+            return function (data, options) {
+                var target;
+                if (options != null) {
+                    target = $(options.target);
+                }
+                if (target && target.hasClass('dropdown-link')) {
+                    alert('click');
+
+                } else {
+                    return fn.apply(this, arguments);
+                }
+            }
+        });
+    }
+
+   
+    function formatRepo(repo) {
+
+        if (repo.loading) return repo.text.substring(0, 75);
+
+        var markup = "";
+        markup += "<span class='title'>" + repo.text.substring(0, 75) + "</span>";
+
+        return markup;
+    }
+    function formatRepoSelection(repo) {
+       
+        if (repo.text != null)
+            return repo.text.substring(0, 75);
+        else
+            return repo.text;
+
+      }
+
+    
+    ///////////////////////////////////////////////////////////////
+</script> 

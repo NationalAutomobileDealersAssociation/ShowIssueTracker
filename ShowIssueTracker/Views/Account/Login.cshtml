@@ -1,0 +1,57 @@
+﻿@using ShowIssueTracker.Models
+@model ShowIssueTracker.Models.AccountViewModels.LoginViewModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    .input-field .prefix {
+        position: absolute;
+        width: 3rem;
+        font-size: 2rem;
+        -webkit-transition: color .2s;
+        transition: color .2s;
+        left: 0px;
+        padding: 10px 0px 0px 0px;
+    }
+</style>
+<div class="col s12 card-panel z-depth-0">
+    <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="center-align" style="width: 400px; margin: 0 auto;">
+
+
+        <div class="input-field col s12 center">
+            @* <img src="images/login-logo.png" alt="" class="circle responsive-img valign profile-image-login">*@
+            <h5 class="center ">Please Login</h5>
+        </div>
+        <div class="input-field col s12">
+            <div asp-validation-summary="All" class="red-text"></div>
+        </div>
+
+        <div class="input-field col s12">
+            <i class="material-icons prefix">person_outline</i>
+            <input id="email" type="email" asp-for="Email">
+            <label asp-for="Email" class="center-align"></label>
+            <span asp-validation-for="Email" class="error"></span>
+        </div>
+        <div class="input-field col s12">
+            <i class="material-icons prefix">lock_outline</i>
+            <input id="password" type="password" asp-for="Password">
+            <label asp-for="Password" class=""></label>
+            <span asp-validation-for="Password" class="error"></span>
+        </div>
+        <div class="checkbox-field col s12">
+            <input type="checkbox" id="remember-me" asp-for="RememberMe">
+            <label for="remember-me">Remember me</label>
+        </div>
+
+        <div class="input-field col s12">
+            <button type="submit" class="submit-button btn  waves-effect waves-light col s12">Login</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

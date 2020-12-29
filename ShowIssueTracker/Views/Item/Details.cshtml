@@ -1,0 +1,52 @@
+﻿@model ShowIssueTracker.Models.Item
+
+<h2>View Entry Details</h2>
+
+<div>
+    
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Issue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Issue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IssueNotes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IssueNotes)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+ 
+       
+    </dl>
+</div>
+<p>
+    @Html.DisplayNameFor(model => model.BlobUrl)
+    <br />
+
+    <video width="100%" height="auto" controls src="@Html.DisplayFor(model => model.BlobUrl)" allowfullscreen="1">
+        Your browser does not support the video tag.
+    </video>
+</p>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

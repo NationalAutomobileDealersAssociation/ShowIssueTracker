@@ -1,0 +1,20 @@
+﻿@using ShowIssueTracker.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    // ViewBag.ConventionTitle = Model.Convention.Title;
+    ViewData["Title"] = "Profile";
+}
+<div class="col s12"><h3>Profile</h3></div>
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="col s12">The user  @UserManager.GetUserName(User)  is logged in.</div>
+    <div class="col s12">
+        <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+            <a class=" waves-effect" href="javascript:document.getElementById('logoutForm').submit()">
+                Click here to Log Out
+            </a>
+        </form>
+    </div>
+}

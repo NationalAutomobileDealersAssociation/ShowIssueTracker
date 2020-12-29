@@ -1,0 +1,27 @@
+﻿@using ShowIssueTracker.Models
+@using Microsoft.AspNetCore.Identity
+@using ShowIssueTracker.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+    <ul id="nav-mobile" class="side-nav" style="font: cyan">
+        <li class="logo center">
+            <a id="logo-container hide-on-small-only" href="#" class="brand-logo">
+                @*<h5>ShowIssueTracker</h5>*@
+                <h4></h4>
+                <img src="~/NADA.png" title="logo" />
+            </a>
+        </li>
+
+        @if (SignInManager.IsSignedIn(User))
+        {
+
+            <li><h5></h5></li>
+            <li><a class="waves-effect waves-light" href="/Item/Index"><i class="material-icons" role="presentation">assignment</i>All Issues</a></li>
+            <li><a class="waves-effect waves-light" href="/Item/Internal"><i class="material-icons" role="presentation">assignment</i>Internal Issues</a></li>
+            <li><a class="waves-effect waves-light" href="/Item/External"><i class="material-icons" role="presentation">assignment</i>External Issues</a></li>
+            <li><a class="waves-effect waves-light" href="/Item/Resolved"><i class="material-icons" role="presentation">assignment</i>Resolved Issues</a></li>
+        }
+
+    </ul>

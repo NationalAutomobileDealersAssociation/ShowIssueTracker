@@ -1,0 +1,90 @@
+﻿@*@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet*@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] </title>
+
+    <environment names="Development,DevABA,Production">
+         
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/fixedheader/3.1.3/css/fixedHeader.dataTables.min.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css" rel="stylesheet" />
+        @*<link href="https://cdn.datatables.net/buttons/1.4.1/css/buttons.dataTables.min.css" rel="stylesheet" />*@
+        <link href="https://cdn.datatables.net/select/1.2.3/css/select.dataTables.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/lib/Trumbowyg-master/dist/ui/trumbowyg.css" />
+        <link rel="stylesheet" href="~/lib/Trumbowyg-master/dist/plugins/colors/ui/trumbowyg.colors.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/css/bootstrapValidator.min.css" />
+
+        <link href="~/lib/select2-4.0.5/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/css/site.css" type="text/css">
+
+    </environment>
+
+</head>
+<body>
+
+    <header>
+        @await Component.InvokeAsync("TopNav")
+        @await Component.InvokeAsync("LeftNav")
+    </header>
+    <main>
+        <div class="row">
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <environment names="Development,DevABA,Production">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+   
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/fixedheader/3.1.3/js/dataTables.fixedHeader.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.4.1/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.flash.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.html5.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.print.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/select/1.2.3/js/dataTables.select.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+        <script src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/time.js"></script>
+
+        @*<script src="~/lib/jsPDF-master/dist/jspdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>*@
+
+
+        <script src="~/lib/select2-4.0.5/dist/js/select2.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.js"></script>
+
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/js/bootstrapValidator.min.js"></script>
+
+    </environment>
+    @RenderSection("Scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            //Modal('.modal');
+           
+            $('.button-collapse').sideNav({
+                menuWidth: 250, // Default is 240
+                edge: 'left', // Choose the horizontal origin
+                closeOnClick: false // Closes side-nav on <a> clicks, useful for Angular/Meteor
+            });
+            $('select').material_select();
+        });
+    </script>
+</body>
+</html>

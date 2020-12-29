@@ -1,0 +1,225 @@
+﻿@model IEnumerable<ShowIssueTracker.Models.Item>
+
+@{
+    ViewBag.Title = "NADA - PublicApp";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <h2>List of  External  Entries</h2>
+<maincontent>
+    <div class="card material-table">
+        <div class="table-header">
+            <span class="table-title">All Issues</span>
+            <div class="actions">
+                <SearchExport></SearchExport>
+            </div>
+        </div>
+        <div class="dataTables_wrapper">
+            <table id="meetingsTable" class="display responsive nowrap"></table>
+        </div>
+    </div>
+</maincontent>
+
+
+@*<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Issue)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EntryTime)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Issue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EntryTime)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+
+
+    }
+
+</table>*@
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_DatatableStyling");}
+    @{ await Html.RenderPartialAsync("_AjaxPartial"); }
+    @{ await Html.RenderPartialAsync("_SelectSearchPartial");}
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            dt('/api/Items/GetAllExternalItems', meetingCols, meetingcolDefs, '#meetingsTable');
+        });
+
+        function DeleteMeeting(id) {
+            Delete('Delete Meeting',
+                'Are you sure you want to delete this Meeting?',
+                '/api/Meetings/DeleteMeeting/' + id,
+                (function () { window.location.href = '@Url.Action("Index", "Meetings")?id=' + id; }));
+        }
+
+        var meetingCols = [
+            { sTitle: "Entry Time", mData: "EntryTime" },
+            { sTitle: "Full Name", mData: "FullName" },
+            { sTitle: "Email", mData: "Email" },
+            { sTitle: "Issue", mData: "Issue" },
+            { sTitle: "Status", mData: "Status" },
+            { sTitle: "Role", mData: "Role" }, 
+            { sTitle: "Issue Type", mData: "IssueType" }, 
+            //Display latest Status
+            { sTitle: "Assigned To", mData: "AssignedTo" }, 
+            { sTitle: "Last Saved By", mData: "LastSavedBy" }, // Show Action List
+            { sTitle: "Edit", mData: "id" }, // View IDC Meeting Data
+            { sTitle: "Delete", mData: "id" }  // Download Report
+            //{ sTitle: "", mData: "id" }  // Delete Meeting 
+        ];
+
+        var meetingcolDefs = [
+            {
+                "render": function (data) {
+                    if (!isNaN(Date.parse(data))) {
+                        var date = new Date(data);
+                        return moment(date).format('MM/DD/YY, ddd');
+                    }
+                    return data;
+                },
+                "targets": [0, 1] 
+            },
+            {
+                className: 'center-align',
+                "targets": 4
+            },
+            {
+                "defaultContent": "",
+                "searchable": true,
+                "orderable": true,
+                className: 'center-align',
+                "targets": 5
+            },
+            {
+                "render": function (data, type, full, row) {
+                        return data;
+                },
+                "targets": 6,
+                "orderable": false,
+                className: 'noVis center-align',
+                "width": "5%"
+            },
+            {
+                "render": function (data, type, row) {
+                    if (row['isGuest'] != true) {
+                        return '<a class="waves-effect custom-text-blue2"  href="/Item/Edit/' +
+                            data +
+                            '">Edit</a>';
+                    }
+                    return '<a href=""></a>';
+                },
+                "targets": 9,
+                "orderable": false,
+                className: 'noVis center-align',
+                "width": "5%"
+            },
+            {
+                "render": function (data, type, row) {
+                    if (row['isGuest'] != true) {
+                        return '<a class="waves-effect custom-text-blue2"  href="/Item/Delete/' +
+                            data +
+                            '">Delete</a>';
+                    }
+                    return '<a href=""></a>';
+                },
+                "targets": 10,
+                "orderable": false,
+                className: 'noVis center-align',
+                "width": "5%"
+            }
+            //,{
+            //    "targets": [10, 11],
+            //    "visible": false,
+            //    "searchable": true
+            //},
+            //{
+            //    "render": function (data) {
+            //        return (data === null || data === undefined) ? '-' : data;
+            //    },
+            //    "targets": '_all'
+            //},
+    ];
+
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+
+            console.log("validated");
+            console.log($("#editActionItemsForm").serialize());
+            RenderMenu();
+
+            // Check if user has permission to add new action
+            var actionItemId = $('#Id').val();
+            if (actionItemId == '00000000-0000-0000-0000-000000000000') { /* GUID Empty */
+                if ($('#_allowAddEditAction').val() == 'false') {
+                    $('#editActionItemsForm').hide();
+                }
+                else {
+                    $('#ActionTitle').text('New Dealership Action Plan');
+                    $('#editActionItemsForm').show();
+                }
+            }
+        });
+
+        // Function - formatDate
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+      </script>
+}

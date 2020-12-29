@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Access denied";
+}
+
+
+
+<div class="register-box">
+    <div class="register-box-body">
+        <div class="text-center">
+            <h3>You do not have access to this resource.</h3>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+    {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_AjaxPartial"); }
+    @{ await Html.RenderPartialAsync("_DatatableStyling");}
+}

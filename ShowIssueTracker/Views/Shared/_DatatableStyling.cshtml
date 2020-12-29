@@ -1,0 +1,417 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<script>
+    (function (window, document, undefined) {
+
+        var factory = function ($, DataTable) {
+            "use strict";
+            //var searchToggle = $(tableId).parent().parent().parent().parent().prev('.table-header').find('.search-toggle');
+            //console.log(searchToggle);
+            //var hiddenSearch = $(tableId).parent().parent().parent().find('.hiddensearch');
+            //console.log(hiddenSearch);
+            $('.search-toggle').click(function () {
+                var hiddenSearch = $(this).parent().parent().parent().next().find('.hiddensearch');
+                if ($(hiddenSearch).css('display') == 'none') {
+                    $(hiddenSearch).slideDown();
+                    $(hiddenSearch).find('input').focus();
+                }
+                else {
+                    $(hiddenSearch).slideUp();
+                }
+            });
+
+            //$('.refreshPage').click(function () {
+            //    "use strict";
+
+            //    if (tableId == null) {
+            //        tableId = '#datatable';
+            //    }
+
+            //    var tabled = $(tableId).DataTable({venuesTable,conventionVendorsTable,signagesTable,functionRoomSetupsTable,foodAndBeverageTable,workshopsTable,functionSpaceRequestsTable,hotelsTable,hotelRoomTable,contractedSpaceTable});
+
+
+            //    //if (tableId == null) {
+            //    //    tableId = '#datatable';
+            //    //}
+            //    $(tabled).DataTable().ajax.reload();
+            //});
+
+
+            /* Set the defaults for DataTables initialisation */
+            $.extend(true, DataTable.defaults, {
+                dom: "<'hiddensearch'fB'><'columnstoggle'>" +
+                "tr" +
+                //"<'table-footer row'ilp'>",
+                    '<"table-footer row"<"col s6 m4 l4"i><"col s6 m4 l4"l><"col s6 m4 l4"p>>',
+                //'<"table-footer row"<"col s6 m3 l3"i><"col s6 m3 l3"l><"col s12 m6 l6"p>>',
+                //"<table-footer row'<'col s3'i'><'col s4'l'><'col s5'p'>>",
+                //"<'table-footer row'<'col s3'<'i><'col s4'l><'clearfix">>>t<"row view-pager"<"col-sm-12"<"text-center"ip>>>""
+                //"<'table-footer row'ilp'>",//<'col s4'i'><'col s4'l'><'col s4'p'>",
+                renderer: 'material'
+            });
+            //$.extend($.fn.dataTable.defaults, {
+            //    responsive: true
+            //});
+            //$.extend(true, DataTable.defaults, {
+            //    dom: 'Bfrtip'
+            //});
+
+            /* Default class modification */
+            //$.extend(DataTable.ext.classes, {
+            //    sWrapper: "dataTables_wrapper",
+            //    sFilterInput: "form-control input-sm",
+            //    sLengthSelect: "form-control input-sm"
+            //});
+
+            /* Default class modification */
+            //$.extend(DataTable.ext.classes, {
+            //    "sLength": "col s6 m2 l2",
+            //    "sInfo": "col s6 m2 l2"
+
+            //    //sWrapper: "dataTables_wrapper",
+            //    //sFilterInput: "form-control input-sm",
+            //    //sLengthSelect: "form-control input-sm"
+            //});
+
+            /* Bootstrap paging button renderer */
+            DataTable.ext.renderer.pageButton.material = function (settings, host, idx, buttons, page, pages) {
+                var api = new DataTable.Api(settings);
+                var classes = settings.oClasses;
+                var lang = settings.oLanguage.oPaginate;
+                var btnDisplay, btnClass, counter = 0;
+                var attach = function (container, buttons) {
+                    var i, ien, node, button;
+                    var clickHandler = function (e) {
+                        e.preventDefault();
+                        if (!$(e.currentTarget).hasClass('disabled')) {
+                            api.page(e.data.action).draw(false);
+                        }
+                    };
+
+                    for (i = 0, ien = buttons.length; i < ien; i++) {
+                        button = buttons[i];
+
+                        if ($.isArray(button)) {
+                            attach(container, button);
+                        } else {
+                            btnDisplay = '';
+                            btnClass = '';
+                            switch (button) {
+                                case 'first':
+                                    btnDisplay = lang.sFirst;
+                                    btnClass = button + (page > 0 ?
+                                        '' : ' disabled');
+                                    break;
+
+                                case 'previous':
+                                    btnDisplay = '<i class="material-icons">chevron_left</i>';
+                                    btnClass = button + (page > 0 ?
+                                        '' : ' disabled');
+                                    break;
+
+                                case 'next':
+                                    btnDisplay = '<i class="material-icons">chevron_right</i>';
+                                    btnClass = button + (page < pages - 1 ?
+                                        '' : ' disabled');
+                                    break;
+
+                                case 'last':
+                                    btnDisplay = lang.sLast;
+                                    btnClass = button + (page < pages - 1 ?
+                                        '' : ' disabled');
+                                    break;
+                                //case 'ellipsis':
+                                //    btnDisplay = '...';
+                                //    btnClass = 'disabled hide-on-med-and-down';
+                                //    break;
+                                //default:
+                                //    btnDisplay = button + 1;
+                                //    btnClass = 'pagenum hide-on-med-and-down ' + (page == button ? 'current' : '');
+                                //    break;
+                            }
+
+                            if (btnDisplay) {
+                                node = $('<li>', {
+                                    'class': btnClass,
+                                    'id': idx === 0 && typeof button === 'string' ?
+                                        settings.sTableId + '_' + button : null
+                                })
+                                    .append($('<a>', {
+                                        'class': (btnClass.indexOf('pagenum') >= 0 ? 'waves-effect waves-light btn table-page-numbers' : (btnClass.indexOf('disabled') >= 0 ? 'btn-flat disabled' : 'waves-effect waves-light btn table-page-arrows')),
+                                        'href': '#',
+                                        'aria-controls': settings.sTableId,
+                                        'data-dt-idx': counter,
+                                        'tabindex': settings.iTabIndex
+                                    })
+                                        .html(btnDisplay)
+                                    )
+                                    .appendTo(container);
+
+                                settings.oApi._fnBindAction(
+                                    node, {
+                                        action: button
+                                    }, clickHandler
+                                );
+
+                                counter++;
+                            }
+                        }
+                    }
+                };
+
+                // IE9 throws an 'unknown error' if document.activeElement is used
+                // inside an iframe or frame.
+                var activeEl;
+
+                try {
+                    // Because this approach is destroying and recreating the paging
+                    // elements, focus is lost on the select button which is bad for
+                    // accessibility. So we want to restore focus once the draw has
+                    // completed
+                    activeEl = $(document.activeElement).data('dt-idx');
+                } catch (e) { }
+
+                attach(
+                    $(host).empty().html('<ul class="material-pagination"/>').children('ul'),
+                    buttons
+                );
+
+                if (activeEl) {
+                    $(host).find('[data-dt-idx=' + activeEl + ']').focus();
+                }
+            };
+
+            /*
+             * TableTools Bootstrap compatibility
+             * Required TableTools 2.1+
+             */
+            if (DataTable.TableTools) {
+                // Set the classes that TableTools uses to something suitable for Bootstrap
+                $.extend(true, DataTable.TableTools.classes, {
+                    "container": "DTTT btn-group",
+                    "buttons": {
+                        "normal": "btn btn-default",
+                        "disabled": "disabled"
+                    },
+                    "collection": {
+                        "container": "DTTT_dropdown dropdown-menu",
+                        "buttons": {
+                            "normal": "",
+                            "disabled": "disabled"
+                        }
+                    },
+                    "print": {
+                        "info": "DTTT_print_info"
+                    },
+                    "select": {
+                        "row": "active"
+                    }
+                });
+
+                // Have the collection use a material compatible drop down
+                $.extend(true, DataTable.TableTools.DEFAULTS.oTags, {
+                    "collection": {
+                        "container": "ul",
+                        "button": "li",
+                        "liner": "a"
+                    }
+                });
+            }
+
+        }; // /factory
+
+        // Define as an AMD module if possible
+        if (typeof define === 'function' && define.amd) {
+            define(['jquery', 'datatables'], factory);
+        } else if (typeof exports === 'object') {
+            // Node/CommonJS
+            factory(require('jquery'), require('datatables'));
+        } else if (jQuery) {
+            // Otherwise simply initialise as normal, stopping multiple evaluation
+            factory(jQuery, jQuery.fn.dataTable);
+        }
+
+    })(window, document);
+
+    var dt = function (url, columns, colDefs, tableId,dataSource, div, footerTotalCol,sel) {
+        if (tableId == null) {
+            tableId = '#datatable';
+        }
+        if (dataSource == null) {
+            dataSource = '';
+        }
+        var columnButtons = [
+            {
+                className: 'btn waves-effect waves-light nada-color-gray z-depth-0',
+                text: 'Print',
+                extend: 'print',
+                exportOptions: {
+                    columns: ':not(:first-child)'
+                    // columns: ':not(:first-child, :last-child)'
+                }
+            },
+            //{
+            //    className: 'btn waves-effect waves-light nada-color-gray z-depth-0',
+            //    text: 'Copy',
+            //    extend: 'copyHtml5',
+            //    exportOptions: {
+            //        columns: ':not(:first-child)'
+            //       // columns: ':not(:first-child, :last-child)'
+            //    }
+            //},
+            {
+                className: 'btn waves-effect waves-light nada-color-gray z-depth-0',
+                text: 'PDF',
+                extend: 'pdfHtml5',
+                exportOptions: {
+                    columns: ':not(:first-child)'
+                    // columns: ':not(:first-child, :last-child)'
+                }
+            },
+            {
+                className: 'btn waves-effect waves-light nada-color-gray z-depth-0',
+                text: 'CSV',
+                extend: 'csvHtml5',
+                exportOptions: {
+                    columns: ':not(:first-child)'
+                    // columns: ':not(:first-child, :last-child)'
+                }
+            },
+            {
+                className: 'btn waves-effect waves-light nada-color-gray z-depth-0',
+                text: 'Excel',
+                extend: 'excelHtml5',
+                exportOptions: {
+                    columns: ':not(:first-child)'
+                    // columns: ':not(:first-child, :last-child)'
+                }
+            },
+            {
+                className: 'btn waves-effect waves-light btn-flat green white-text',
+                text: '<i class="material-icons">refresh</i>',
+                action: function (e, dt, node, config) {
+                    dt.ajax.reload();
+                }
+            }
+
+        ];
+
+        if ($.fn.DataTable.isDataTable(tableId)) {
+            $(tableId).DataTable().destroy();
+        }
+        $(tableId + ' tbody').empty();
+       
+        var table = $(tableId).DataTable({
+            "order": [],
+            colReorder: true,
+            "oLanguage": {
+                "sProcessing": "<div class='preloader-wrapper small active'> \
+                                        <div class='spinner-layer spinner-green-only'> \
+                                          <div class='circle-clipper left'> \
+                                            <div class='circle'></div> \
+                                          </div><div class='gap-patch'> \
+                                            <div class='circle'></div> \
+                                          </div><div class='circle-clipper right'> \
+                                            <div class='circle'></div> \
+                                          </div> \
+                                        </div> \
+                                      </div>",
+                "sLoadingRecords": "",
+                "sStripClasses": "",
+                "sSearch": "",
+                "sSearchPlaceholder": "Search Here",
+                "sInfo": "_START_ - _END_ of _TOTAL_", 
+                "sInfoPostFix": "<p><strong><font color='red'>* </font>For Multiple sorting, sort by the primary field, press and hold shift and sort by the secondary field.</strong></p>",
+                "sLengthMenu": '<span>Rows per page:</span><select class="browser-default">' +
+                    '<option value="10">10</option>' +
+                    '<option value="20">20</option>' +
+                    '<option value="30">30</option>' +
+                    '<option value="40">40</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="-1">All</option>' +
+                    '</select></div>',
+            },
+            ajax: {
+                "url": url,
+                "type": "GET",
+                "dataType": "json",
+                "data": '',
+                "dataSrc": dataSource
+            },
+            processing: true,
+            bAutoWidth: true,
+            "aoColumns": columns,
+            select: {style:'os'},// sel,
+            "deferRender": true,
+            fixedHeader: true,
+            scrollX: true,
+            stateSave: true,
+            "stateSaveParams": function (settings, data) {
+                data.search.search = "";
+            },
+            //scrollCollapse: true,
+            responsive:false,
+            fixedColumns: {
+                leftColumns: 1,
+                rightColumns: 1
+            },
+            columnDefs: colDefs,
+            drawCallback: function(settings) {
+                if (div !== '') {
+                    $(div).html($(tableId).DataTable().rows().data().length);
+                }
+                //$('.main-block').perfectScrollbar('update');
+            },
+            initComplete: function (settings, json) {
+
+            },
+            "footerCallback": function(row, data, start, end, display) {
+                var api = this.api(), data;
+
+                if (footerTotalCol !== '' && footerTotalCol !== undefined) {
+                    // Remove the formatting to get integer data for summation
+                    var intVal = function(i) {
+                        return typeof i === 'string'
+                            ? i.replace(/[\$,]/g, '') * 1
+                            : typeof i === 'number'
+                                ? i
+                                : 0;
+                    };
+
+                    // Total over all pages
+                    var total = api
+                        .column(3)
+                        .data()
+                        .reduce(function(a, b) {
+                            return intVal(a) + intVal(b);
+                        },
+                            0);
+
+                    // Update footer
+                    if (total > 0) {
+                        $(tableId).parent().parent().parent().find('.table-footer').prepend(
+                            '<div class="col s12 right-align"><h5 class="sub-header grey-text text-darken-1"> Total: ' +
+                            converToCurrency(total) +
+                            '</h5></div>'
+                        );
+                    }
+                }
+            },
+            buttons: columnButtons
+        });
+
+        var colButs = $();
+        new $.fn.dataTable.Buttons(table,
+            {
+                buttons: colButs
+            });
+        table.buttons(1, null).container().appendTo(
+            //table.table().container()
+            $(tableId).parent().parent().parent().find('.columnstoggle')
+        );
+    }
+
+</script>

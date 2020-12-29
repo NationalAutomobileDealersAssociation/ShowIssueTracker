@@ -1,0 +1,601 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<script>
+    function DatePicker(fieldId, startDate, minDate, maxDate) {
+
+        var input = $(fieldId).pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            format: 'mm/dd/yyyy',
+            today: 'Today',
+            //onStart: function ()
+            //{
+            //    var date = new Date();
+            //    this.set('select', [date.getFullYear(), date.getMonth(), date.getDate()]);
+            //},
+            clear: 'Clear',
+            close: 'Ok',
+            closeOnSelect: false // Close upon selecting a date,
+        });
+
+        var picker = input.pickadate('picker');
+
+        if (startDate!=null) {
+            picker.set('select', new Date(startDate));
+        }
+        if (minDate!=null) {
+            picker.set('min', new Date(minDate));
+        }
+        if (maxDate!=null) {
+            picker.set('max', new Date(maxDate));
+        }
+
+        return picker;
+
+    }
+
+    function TimePicker(fieldId) {
+
+        $(fieldId).pickatime({
+            default: 'now', // Set default time: 'now', '1:30AM', '16:30'
+            fromnow: 0, // set default time to * milliseconds from now (using with default = 'now')
+            twelvehour: true, // Use AM/PM or 24-hour format
+            donetext: 'OK', // text for done-button
+            cleartext: 'Clear', // text for clear-button
+            canceltext: 'Cancel', // Text for cancel-button
+            autoclose: false, // automatic close timepicker
+            ampmclickable: true, // make AM PM clickable
+            aftershow: function () { } //Function for after opening timepicker
+        });
+    }
+    function Modal(modal, form) {
+        $(modal).modal({
+            dismissible: false,
+            complete: function () {                
+                $(form).trigger('reset');
+                $(form + ' #id').val('');
+                $(form + ' .trumbowyg-editor').empty();
+                $("#PreviewImage").html('');
+                $('#DiagramImageView').html('');
+                $('select').prop('selectedIndex', 0); //Sets the first option as selected
+                $(form + ' .selectSearch').val("").trigger("change");
+                $('select').material_select();
+                $('#What').summernote('reset');
+                $('#After').summernote('reset');
+            }
+        });
+    }
+    function populateForm(form, data) {
+        $.each(data,
+            function(key, value) {
+                var $ctrl = $('[id=' + key + ']', form);
+
+                if (value != null) {
+
+                    if ($ctrl.is('select')) {
+                        // Check for select2 control first
+                        if ($ctrl.is('.select2-hidden-accessible')) {
+                            if (value.id !== undefined) {
+                                $ctrl.append('<option value="' +
+                                    value.id +
+                                    '" selected="selected">' +
+                                    value.dropDownText +
+                                    '</option>');
+                            } else {
+                                $ctrl.append('<option value="' +
+                                    value +
+                                    '" selected="selected">' +
+                                    value +
+                                    '</option>');
+                            }
+                            //$ctrl.trigger('change');
+                        }
+                        // Regular dropdown select
+                        else {
+                            $("option", $ctrl).each(function() {
+                                if (value.id !== undefined) {
+                                    if (this.value === value.id) {
+                                        this.selected = true;
+                                        $('select').material_select();
+                                    }
+                                } else {
+                                    if (this.text === value) {
+                                        this.selected = true;
+                                        $('select').material_select();
+                                    }
+                                }
+
+                            });
+                        }
+                    }
+                    if ($ctrl.is('.file-path')) {
+                        $ctrl.val(value.fileName);
+
+                    }
+                    if ($ctrl.is('textarea')) {
+
+                        $ctrl.val(value);
+                        $ctrl.trigger('autoresize');
+                    } else if ($ctrl.is('.trumbowyg-editor')) {
+                        $ctrl.trumbowyg('html', value);
+                    } else {
+                        switch ($ctrl.attr("type")) {
+                            
+                            case "text":
+                            case "email":
+                                $ctrl.val(value);
+                                break;
+                            case "date":
+                                var d = new Date(value);
+                                var month = ("0" + (d.getMonth()+1)).slice(-2);
+                                var day = ("0" + d.getDate()).slice(-2);
+                                var newDate = d.getFullYear() + '-' + (month) + "-" + (day);
+                                $ctrl.val(newDate); 
+                                break;
+                            case "time":
+                                var t = new Date(value);
+                                var hours = ("0" + (t.getHours())).slice(-2);
+                                var minutes = ("0" + (t.getMinutes())).slice(-2);
+                                var sec = ("0" + (t.getSeconds())).slice(-2);
+                                var time = (hours) + ':' + (minutes) +':'+ (sec);
+                                $ctrl.val(time);
+                                break;
+                            case "hidden":
+                                $ctrl.val(value);
+                                break;
+                            case "radio":
+                            case "checkbox":
+                                $ctrl.attr('checked', value);
+                                break;
+                        }
+                    }
+                }
+            });
+    }
+
+    function Post(form) {
+
+      $.ajax({
+            url: '/api/Workshops/ConvertWorkshopsToFunctionsAsync/',
+            type: 'Post',
+            data: $(form).serialize(),
+           dataType: 'json',
+            "dataSrc": '',
+          success: function (data, xhr) {
+              roomList(data.list, listCols, listColDefs);
+                if (data.success === false) {
+                    swal("Error!", data.value, "error");
+                }
+                else 
+                    swal("Done!", data.value, "success");
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                swal("Error!", data.value, "error");
+          }
+
+        });
+    }
+    function cloneSelectedList(url, form, func) {
+
+       // alert($(form).serialize());
+
+        $.ajax({
+            url: url,
+            type: 'Post',
+            data: $(form).serialize(),
+          //  contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            "dataSrc": '',
+            success: function (data, xhr) {
+                if (data.success === false) {
+                    swal("Error!", data.value, "error");
+                } else {
+                    if (func!=null) {
+                        func();
+                    }
+                    swal("Done!", data.value, "success");
+                }
+                    
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                swal("Error!", data.value, "error");
+            }
+
+        });
+    }
+
+    function roomList(data, listCols, listColDefs) {
+
+        if ($.fn.DataTable.isDataTable('#listTable')) {
+            $('#listTable').DataTable().destroy();
+        }
+
+        $('#listTable').DataTable({
+            data: data,
+            "aoColumns": listCols,
+            columnDefs: listColDefs
+        });
+    }
+    function Get(url, form, modal) {
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data, xhr) {
+                populateForm($(form), data);
+                $(modal).modal('open');
+                Materialize.updateTextFields();
+
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                swal("Error!", "There is some error", "error");
+            }
+        });
+    }
+    function SavePopup(url, form, redirect, func) {
+
+        console.log(redirect);
+        $(form).find(":submit").prop('disabled', true);
+        console.log($(form).serialize());
+        console.log($(form).serializeArray());
+
+        $.ajax({
+            headers: {
+                'Accept': 'application/json'
+            },
+            url: url,
+            type: 'POST',
+            //contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+            data: $(form).serialize(),
+            dataType: 'json',
+            success: function (data) {
+                if (data.success === true) {
+                   
+                   // window.location.href = "/ActionItems?id=" + data.Meeting.Id;
+                    if (func != null) { 
+                        console.log(data);
+                        $(form).trigger('reset');
+                        $(form + ' #id').val('');
+                        $(form + ' .trumbowyg-editor').empty();
+                        $('select').prop('selectedIndex', 0); //Sets the first option as selected
+                        $(form + ' .selectSearch').val("").trigger("change");
+                        $('select').material_select();
+                        $('.modal').modal('close');
+                        location.reload();
+                        func();
+                    }
+                    if (redirect != null && data.id != null) {
+                      // window.location.href = "/ActionItems?id=" + data.id;
+                    } else {
+                        $(form).trigger('reset');
+                        $(form + ' #id').val('');
+                        $(form + ' .trumbowyg-editor').empty();
+                        $('select').prop('selectedIndex', 0); //Sets the first option as selected
+                        $(form + ' .selectSearch').val("").trigger("change");
+                        $('select').material_select();
+                        $('.modal').modal('close');
+                        location.reload();
+                    }
+                    swal("Done!", data.value, "success");
+                    $(form).find(":submit").prop('disabled', false);
+                }
+                else
+                    swal("Error!", data.value, "error");
+                $(form).find(":submit").prop('disabled', false);
+            },
+            error: function (data) {
+                swal("Error!", data.value, "error");
+                $(form).find(":submit").prop('disabled', false);
+            }
+        });
+        return false;
+    }
+    function Save(url, form,  redirect, func ) {
+
+        console.log($(form).serialize());
+        console.log($(form).valid());
+        if (!$(form).valid()) return false;
+        $(form).find(":submit").prop('disabled', true);
+        console.log($(form).serialize());
+        console.log($(form).serializeArray());
+
+        $.ajax({
+            headers: {
+                'Accept': 'application/json'
+            },
+            url: url,
+            type: 'POST',
+            //contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+            data: $(form).serialize(),
+            dataType: 'json',
+            success: function (data) {
+                if (data.success === true) {
+                    if (func != null) {
+                        func();
+                    }
+                    if (redirect != null && data.id != null) {
+                        window.location.href = redirect + data.id;
+                    } else {
+                        $(form).trigger('reset');
+                        $(form + ' #id').val('');
+                        $(form + ' .trumbowyg-editor').empty();
+                        $('select').prop('selectedIndex', 0); //Sets the first option as selected
+                        $(form + ' .selectSearch').val("").trigger("change");
+                        $('select').material_select();
+                        $('.modal').modal('close');
+                        $('#editStatusForm' + ' #Comments').summernote('reset');
+                    }
+                    swal("Done!", data.value, "success");
+                    $(form).find(":submit").prop('disabled', false);
+                }
+                else
+                  swal("Error!", data.value, "error");
+                  $(form).find(":submit").prop('disabled', false);                  
+            },
+            error: function (data) {
+                console.log(data);
+                swal("Error!", data.value, "error");
+                $(form).find(":submit").prop('disabled', false);
+            }
+        });
+        return false;
+    }
+
+    function SaveAccess(url, form, redirect, func) {
+
+        console.log($(form).serialize());
+        console.log($(form).valid());
+        if (!$(form).valid()) return false;
+        $(form).find(":submit").prop('disabled', true);
+        console.log($(form).serialize());
+        console.log($(form).serializeArray());
+
+        $.ajax({
+            headers: {
+                'Accept': 'application/json'
+            },
+            url: url,
+            type: 'POST',
+            //contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+            data: $(form).serialize(),
+            dataType: 'json',
+            success: function (data) {
+                if (data.success === true) {
+                    if (func != null) {
+                        func();
+                    }
+                    if (redirect != null && data.id != null) {
+                        window.location.href = redirect + data.id;
+                    } else {
+                        $(form).trigger('reset');
+
+                    }
+                    swal("Done!", data.value, "success");
+                    $(form).find(":submit").prop('disabled', false);
+                }
+                else {
+
+                
+                    console.log(data);
+                    swal("Error!", data.value, "error");
+                    $(form).find(":submit").prop('disabled', false);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+                swal("Error!", data.value, "error");
+                $(form).find(":submit").prop('disabled', false);
+            }
+        });
+        return false;
+    }
+    function Delete(title, text, url, func) {
+        swal({
+            title: title,
+            text: text,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function (isConfirm) {
+            if (!isConfirm) return;
+            $.ajax({
+                url: url,
+                method: "DELETE",
+                success: function(data) {
+                    if (data.success === true) {
+                        if (func != null) {
+                            func();
+                        }
+                        swal("Done!", data.value, "success");
+                    }
+                    else {
+                        swal("Error deleting!", "Please try again", "error");
+                        swal("Error deleting!", data.value, "error");
+                        }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    swal("Error deleting!",data.value, "error");
+                }
+            });
+        });
+        
+    }
+    function SaveFile(url, form, redirect, meetingId) {
+
+        $(form).find(":submit").prop('disabled', true);
+        var formData = document.forms.namedItem(form);
+        var property = document.getElementById("file").files[0];
+        console.log(property);
+        var form1 = $(form)[0];
+        console.log(form1);
+        console.log("here");
+        var data = new FormData(form1);
+        data.append("file", property);
+        console.log($(form).serialize());
+        console.log($(form).serializeArray());
+        console.log(data);
+
+        console.log($(form));
+        $.ajax({
+            url: url,
+            type: "POST",
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
+            data: data,
+            cache: false,
+            success: function(data) {
+                if (data.success === true) {
+                    if (meetingId != null) {
+                        window.location.href = "/Meetings/Edit?id=" + meetingId;
+                    }
+                    if (redirect != null && data.id != null) {
+                        //  window.location.href = redirect + data.id;
+
+                    }
+                    swal("Done!", data.value, "success");
+                    $(form).find(":submit").prop('disabled', false);
+                } else
+                    swal("Error!", data.value, "error");
+                $(form).find(":submit").prop('disabled', false);
+
+            },
+            error: function (data) {
+                swal("Error!", data.value, "error");
+                $(form).find(":submit").prop('disabled', false);
+                }
+        });
+        return false;
+    }
+
+    function SaveRoomDiagram(url, form, redirect, meetingId) {
+
+        var form1 = $(form)[0];
+        var data = new FormData(form1);
+        console.log($(form).serialize());
+        console.log($(form).serializeArray());
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
+            data: data,
+            success: function(data) {
+                if (data.success === true) {
+                    if (meetingId != null) {
+                        window.location.href = "/Meetings/Edit?id=" + meetingId;
+                    }
+                    if (redirect != null && data.id != null) {
+                        //  window.location.href = redirect + data.id;
+
+                    } else {
+                        $(form).trigger('reset');
+                        $(form + ' #id').val('');
+                        $(form + ' .trumbowyg-editor').empty();
+                        $('select').prop('selectedIndex', 0); //Sets the first option as selected
+                        $(form + ' .selectSearch').val("").trigger("change");
+                        $('select').material_select();
+                        $('.modal').modal('close');
+
+                    }
+                    swal("Done!", data.value, "success");
+                } else
+                    swal("Error!", data.value, "error");
+
+            },
+            error: function (data) {
+                swal("Error!", data.value, "error");
+                }
+        });
+        return false;
+    }
+
+    //-----UNSAVED CHANGES POP-UP----------------//
+
+    //var warnMessage = "You have unsaved changes on this page!";
+
+    //$(document).ready(function () {
+    //    $('input:not(:button,:submit),textarea,select').change(function () {
+    //        window.onbeforeunload = function () {
+    //            if (warnMessage != null) return warnMessage;
+    //        }
+    //    });
+    //    $('button:submit').click(function (e) {
+    //        warnMessage = null;
+    //    });
+    //});
+
+    //var unsaved = false;
+
+    //$(":input").change(function () { //triggers change in all input fields including text type
+    //    unsaved = true;
+    //});
+
+    //function unloadPage() {
+    //    if (unsaved) {
+    //        return "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
+    //    }
+    //}
+
+    //window.onbeforeunload = unloadPage;
+
+
+    //-----PHONE NUMBER AUTO FORMAT-------//
+
+    $('.phone')
+
+        .on('keypress', function (e) {
+            var key = e.charCode || e.keyCode || 0;
+            var phone = $(this);
+            if (phone.val().length === 0) {
+                phone.val(phone.val() + '(');
+            }
+            // Auto-format- do not expose the mask as the user begins to type
+            if (key !== 8 && key !== 9) {
+                if (phone.val().length === 4) {
+                    phone.val(phone.val() + ')');
+                }
+                if (phone.val().length === 5) {
+                    phone.val(phone.val() + ' ');
+                }
+                if (phone.val().length === 9) {
+                    phone.val(phone.val() + '-');
+                }
+                if (phone.val().length >= 14) {
+                    phone.val(phone.val().slice(0, 13));
+                }
+            }
+
+            // Allow numeric (and tab, backspace, delete) keys only
+            return (key == 8 ||
+                key == 9 ||
+                key == 46 ||
+                (key >= 48 && key <= 57) ||
+                (key >= 96 && key <= 105));
+        })
+
+        .on('focus', function () {
+            phone = $(this);
+
+            if (phone.val().length === 0) {
+                phone.val('(');
+            } else {
+                var val = phone.val();
+                phone.val('').val(val); // Ensure cursor remains at the end
+            }
+        })
+
+        .on('blur', function () {
+            $phone = $(this);
+
+            if ($phone.val() === '(') {
+                $phone.val('');
+            }
+        });
+
+</script>
