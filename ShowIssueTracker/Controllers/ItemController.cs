@@ -107,109 +107,91 @@ namespace ShowIssueTracker.Controllers
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         public async Task<ActionResult> CreateAsync(Item item, List<IFormFile> files)
         {
-
-          /*  foreach (var formFile in files)
-            {
-                if (!(formFile.FileName.ToString().ToLower().Contains("mov") || formFile.FileName.ToString().ToLower().Contains("mp4")))
-                {
-                    //return View("UploadError");
-                    ModelState.AddModelError("Video", "Only .mov and .mp4 files up to 2GB");
-                }
-            }*/
-           // if (ModelState.IsValid)
-            {
-
-                //////////////
+                 //////////////
                 bool allVideosUploaded = false;
                 var i = 0;
                 var count = files.Count();
-                foreach (var formFile in files)
+
+                if(count >0 )
                 {
-
-                    var uploadSuccess = false;
-                    string uploadedUri = null;
-                    if (formFile.Length <= 0)
-                    {
-                        continue;
-                    }
-                    #region Other option
-                    // NOTE: uncomment either OPTION A or OPTION B to use one approach over another
-
-                    //OPTION A: convert to byte array before upload
-                    //using (var ms = new MemoryStream())
-                    //{
-                    //    formFile.CopyTo(ms);
-                    //    var fileBytes = ms.ToArray();
-                    //    (uploadSuccess, uploadedUri) = await UploadToBlob(formFile.FileName, fileBytes, null);
-                    //    TempData["uploadedUri"] = uploadedUri;
-                    //    item.BlobUrl = uploadedUri;
-
-                    //}
-                    #endregion
-                    //OPTION B: read directly from stream for blob upload
-                    using (var stream = formFile.OpenReadStream())
+                    foreach (var formFile in files)
                     {
 
-                        (uploadSuccess, uploadedUri) = await UploadToBlob(item.FullName.Trim() + i + (new Random()).Next(100, 1000) + formFile.FileName, null, stream);
-                        TempData["uploadedUri"] = uploadedUri;
-                        item.BlobUrl = uploadedUri;
-                        item.EntryTime = DateTime.Now;
-                        item.Status = "New";
-
-                        item.LastSavedBy = item.Email;
-                        item.LastSavedTime = DateTime.Now;
-
-
-                        i = i + 1;
-                        if (uploadSuccess)
-
+                        var uploadSuccess = false;
+                        string uploadedUri = null;
+                        if (formFile.Length <= 0)
                         {
-                            await Respository.CreateItemAsync(item);
-                            // return View("UploadSuccess");
+                            continue;
                         }
-                        else
+                         
+                        //OPTION B: read directly from stream for blob upload
+                        using (var stream = formFile.OpenReadStream())
                         {
-                            return View("UploadError");
+
+                            (uploadSuccess, uploadedUri) = await UploadToBlob(item.FullName.Trim() + i + (new Random()).Next(100, 1000) + formFile.FileName, null, stream);
+                            TempData["uploadedUri"] = uploadedUri;
+                            item.BlobUrl = uploadedUri;
+                            item.EntryTime = DateTime.Now;
+                            item.Status = "New";
+
+                            item.LastSavedBy = item.Email;
+                            item.LastSavedTime = DateTime.Now;
+
+
+                            i = i + 1;
+                            if (uploadSuccess)
+
+                            {
+                                await Respository.CreateItemAsync(item);
+                                // return View("UploadSuccess");
+                            }
+                            else
+                            {
+                                return View("UploadError");
+                            }
+                            if (i == count)
+                            {
+                                allVideosUploaded = true;
+                            }
                         }
-                        if (i == count)
-                        {
-                            allVideosUploaded = true;
-                        }
+
                     }
-
+                }
+                else
+                {
+                    item.BlobUrl = "No Files Uploaded";
+                    item.EntryTime = DateTime.Now;
+                    item.Status = "New";
+                    item.LastSavedBy = item.Email;
+                    item.LastSavedTime = DateTime.Now;
+                    await Respository.CreateItemAsync(item);
+                    allVideosUploaded = true;
                 }
 
                 if (allVideosUploaded)
-
-                {
-
+                 {
                     /// send email 
-                   var emailProp = new SendEmail();
+                    var emailProp = new SendEmail();
                     emailProp.Subject = _internalProp.secretCode;
                     emailProp.ToEmail = _internalProp.toAddress;
                     var body = " <table> <tr><td>FirstName : "+ item.FullName+ "</td></tr> <tr><td>LastName : " + item.Issue + "</td></tr><tr><td>ContactEmail : " + item.IssueNotes + "</td></tr>  <tr><td>Video URL : " + item.BlobUrl + "</td></tr> </table> ";
                     emailProp.Body = body;
                     emailProp.CCEmail = _internalProp.ccAddress;
                     var dataRtn = await SendEmail(emailProp);
- 
-                    return View("UploadSuccess");
+                    
+                   return View("UploadSuccess");
                 }
                 else
                 {
                     return View("UploadError");
                 }
-            }
-            //else
-            //{
-            //    return View("~/Item/Create/?error=video");
-            //}
         }
 
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
         //public async Task<ActionResult> EditAsync([Bind("Id,FullName,Email,Issue,Role,IssueType,Description,Status,AssignedTo,IssueNotes,isComplete,PublicUrl,EntryTime,LastSavedBy,LastSavedTime,Priority,BlobUrl")] Item item)
-            public async Task<ActionResult> EditAsync( Item item)
+        public async Task<ActionResult> EditAsync( Item item)
         {
             var user = _userManager.GetUserName(User);
             if (user == null)
@@ -227,7 +209,6 @@ namespace ShowIssueTracker.Controllers
                     item.Completed = false; 
                 }
 
-               
                 item.LastSavedBy = user; 
                 item.LastSavedTime = DateTime.Now;
 
