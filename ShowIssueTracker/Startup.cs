@@ -145,10 +145,12 @@ namespace ShowIssueTracker
                 .AddMvcOptions(options => options.EnableEndpointRouting = false);
 
             // Add application services. 
-            services.AddTransient<IGlobalExceptionLoggingMiddleWare, GlobalExceptionLoggingMiddleWare>();
-            services.AddTransient<IImpexiumLogin, ImpexiumLogin>();
-            services.AddTransient<INadaRepository, NadaRepository>();
-            services.AddSingleton<IDocumentDBRepository<Item>>(new DocumentDBRepository<Item>());
+            services.AddScoped<IGlobalExceptionLoggingMiddleWare, GlobalExceptionLoggingMiddleWare>();
+            services.AddScoped<IImpexiumLogin, ImpexiumLogin>();
+            services.AddScoped<INadaRepository, NadaRepository>();
+           // services.AddSingleton<IDocumentDBRepository<Item>>(new DocumentDBRepository<Item>());
+
+            services.AddScoped<IDocumentDBRepository<Item>, DocumentDBRepository<Item>>();
 
             services.AddRazorPages();
             services.AddMvc().AddNewtonsoftJson();
