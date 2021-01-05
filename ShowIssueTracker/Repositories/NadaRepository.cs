@@ -9,15 +9,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace ShowIssueTracker.Repositories
 {
     public class NadaRepository: INadaRepository
     {
-        private readonly IHostingEnvironment _env; 
+        private readonly IHostEnvironment _env; 
         private readonly SendGridProperties _sendGrid;
         private readonly InternalProperties _internalProp;
-        public NadaRepository(IHostingEnvironment env,  IOptions<SendGridProperties> sendGrid, IOptions<InternalProperties> internalProp)
+        public NadaRepository(IHostEnvironment env,  IOptions<SendGridProperties> sendGrid, IOptions<InternalProperties> internalProp)
         {
             _env = env; 
             _sendGrid = sendGrid.Value;

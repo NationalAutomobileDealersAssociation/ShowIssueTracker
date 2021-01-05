@@ -29,9 +29,10 @@ namespace ShowIssueTracker.Authorization
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ImpexiumProperties _impexiumProperties;
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
 
-        public ImpexiumLogin(UserManager<ApplicationUser> userManager, IOptions<ImpexiumProperties> impexiumProperties, IHostingEnvironment env)
+        public ImpexiumLogin(UserManager<ApplicationUser> userManager,
+            IOptions<ImpexiumProperties> impexiumProperties, IWebHostEnvironment env)
         {
             _userManager = userManager;
             _impexiumProperties = impexiumProperties.Value;
