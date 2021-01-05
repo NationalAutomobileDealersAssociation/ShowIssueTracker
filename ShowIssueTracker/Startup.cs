@@ -86,13 +86,13 @@ namespace ShowIssueTracker
             services.Configure<SendGridProperties>(Configuration.GetSection("SendGridSettings"));
             services.Configure<JWToken>(Configuration.GetSection("Tokens"));
 
-            services.AddIdentityServer()
-             .AddDeveloperSigningCredential()
-             .AddInMemoryPersistedGrants()
-             .AddInMemoryIdentityResources(Config.GetIdentityResources())
-             .AddInMemoryApiResources(Config.GetApiResources())
-             .AddInMemoryClients(Config.GetClients())
-             .AddAspNetIdentity<ApplicationUser>();
+            //services.AddIdentityServer()
+            // .AddDeveloperSigningCredential()
+            // .AddInMemoryPersistedGrants()
+            // .AddInMemoryIdentityResources(Config.GetIdentityResources())
+            // .AddInMemoryApiResources(Config.GetApiResources())
+            // .AddInMemoryClients(Config.GetClients())
+            // .AddAspNetIdentity<ApplicationUser>();
 
             services.AddAuthentication(IdentityConstants.ApplicationScheme)
                //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -181,7 +181,7 @@ namespace ShowIssueTracker
             app.UseRouting();
             app.UseCors("CorsPolicy");
             app.UseAuthentication();
-            app.UseIdentityServer();
+          //  app.UseIdentityServer();
             app.UseAuthorization();
             app.UseStatusCodePages();
             app.UseEndpoints(endpoints =>
