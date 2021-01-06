@@ -83,14 +83,14 @@ namespace ShowIssueTracker.Controllers
         }
 
         [AllowAnonymous]
-        [ActionName("Post")]
-        public async Task<IActionResult> CreateAsync(string name, string email)
+        [ActionName("Support")]
+        public async Task<IActionResult> CreateAsync(string fullname, string email)
         {
 
             Item item = new Item()
             {
-                 FullName = name,
-                 Email =email,
+                 FullName = fullname,
+                Email =email,
                  EntryTime = DateTime.Today, 
                  LastSavedTime = DateTime.Today
             };
