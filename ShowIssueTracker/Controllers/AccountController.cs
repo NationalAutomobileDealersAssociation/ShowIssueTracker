@@ -82,7 +82,7 @@ namespace ShowIssueTracker.Controllers
 
             if (!impexiumLogin.Succeeded)
             {
-                ModelState.AddModelError(string.Empty, "Invalid Impexium login attempt. Or you have no access to this interface, Please contact  hmartinez@nada.org  to get access to the interface.");
+                ModelState.AddModelError(string.Empty, "Invalid login attempt or you do not have appropriate access.  Please contact Hector Martinez (hmartinez@nada.org) for support.");
                 return View(model);
             }
 

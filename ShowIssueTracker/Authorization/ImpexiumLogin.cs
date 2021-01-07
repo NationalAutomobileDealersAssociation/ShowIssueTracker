@@ -468,7 +468,7 @@ namespace ShowIssueTracker.Authorization
                 var dtCurrentToken = Convert.ToDateTime((string)tokenExpirationTime);
                 var dtCurrent = DateTime.Now;
 
-                if (!((dtCurrent - dtCurrentToken).TotalHours >= 21))
+               // if (!((dtCurrent - dtCurrentToken).TotalHours >= 21))
                 {
                     await GetImpexiumAccessToken();
                     token = ReadfileAndReturnString();
