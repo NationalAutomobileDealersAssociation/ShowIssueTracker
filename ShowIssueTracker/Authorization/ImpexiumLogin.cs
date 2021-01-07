@@ -340,7 +340,7 @@ namespace ShowIssueTracker.Authorization
                 // add to local storage 
                 var local = accessToken + "|" + apiEndPoint +
                             "|" + DateTime.Now;
-                WriteToFile(local);
+                //WriteToFile(local);
                 return local;
             }
             catch (Exception ex)
@@ -453,12 +453,12 @@ namespace ShowIssueTracker.Authorization
         {
             try
             {
-                var token = ReadfileAndReturnString();
+                var token = await GetImpexiumAccessToken();
 
                 if (string.IsNullOrEmpty(token))
                 {
-                    await GetImpexiumAccessToken();
-                    token = ReadfileAndReturnString();
+                
+                    token = await GetImpexiumAccessToken(); //ReadfileAndReturnString();
                 }
 
                 var p = token.Split('|');
@@ -470,8 +470,8 @@ namespace ShowIssueTracker.Authorization
 
                // if (!((dtCurrent - dtCurrentToken).TotalHours >= 21))
                 {
-                    await GetImpexiumAccessToken();
-                    token = ReadfileAndReturnString();
+                   
+                    token = await GetImpexiumAccessToken(); //ReadfileAndReturnString();
                     p = token.Split('|');
                 }
 
@@ -660,8 +660,8 @@ namespace ShowIssueTracker.Authorization
             try
             {
                 var managerEmail = "";
-                var token = ReadfileAndReturnString();
-               
+                var token = await GetImpexiumAccessToken(); // ReadfileAndReturnString();
+
                 var p = token.Split('|');
                 var accessToken = p[0];
                 var apiEndPoint = p[1];
@@ -820,7 +820,7 @@ namespace ShowIssueTracker.Authorization
       
         public async Task<string> findUserByEmailInImpexium(string email)
         {
-            var token = ReadfileAndReturnString();
+            var token = await GetImpexiumAccessToken(); //ReadfileAndReturnString();
 
             var p = token.Split('|');
             var accessToken = p[0];
