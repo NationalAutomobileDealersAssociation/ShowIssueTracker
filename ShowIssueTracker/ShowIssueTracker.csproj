@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Token\token.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Token\token.txt">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.7.0" />
     <PackageReference Include="IdentityServer4" Version="4.1.1" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="3.1.2" />
@@ -32,10 +43,6 @@
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
 
    
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Token\" />
   </ItemGroup>
 
 </Project>
