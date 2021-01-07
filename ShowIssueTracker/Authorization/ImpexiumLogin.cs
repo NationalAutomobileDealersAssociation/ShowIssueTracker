@@ -340,7 +340,7 @@ namespace ShowIssueTracker.Authorization
                 // add to local storage 
                 var local = accessToken + "|" + apiEndPoint +
                             "|" + DateTime.Now;
-                //WriteToFile(local);
+                WriteToFile(local);
                 return local;
             }
             catch (Exception ex)
@@ -453,12 +453,12 @@ namespace ShowIssueTracker.Authorization
         {
             try
             {
-                var token = await GetImpexiumAccessToken();
+                var token = ReadfileAndReturnString();
 
                 if (string.IsNullOrEmpty(token))
                 {
-                
-                    token = await GetImpexiumAccessToken(); //ReadfileAndReturnString();
+                    await GetImpexiumAccessToken();
+                    token = ReadfileAndReturnString();
                 }
 
                 var p = token.Split('|');
@@ -468,10 +468,10 @@ namespace ShowIssueTracker.Authorization
                 var dtCurrentToken = Convert.ToDateTime((string)tokenExpirationTime);
                 var dtCurrent = DateTime.Now;
 
-               // if (!((dtCurrent - dtCurrentToken).TotalHours >= 21))
+                if (!((dtCurrent - dtCurrentToken).TotalHours >= 21))
                 {
-                   
-                    token = await GetImpexiumAccessToken(); //ReadfileAndReturnString();
+                    await GetImpexiumAccessToken();
+                    token = ReadfileAndReturnString();
                     p = token.Split('|');
                 }
 
@@ -500,9 +500,9 @@ namespace ShowIssueTracker.Authorization
                     }
 
                     var jsonRelationships = await GetImpexiumUserRelations(tokenList);
-                    dynamic userdetails = JsonConvert.DeserializeObject(jsonRelationships);
+                    dynamic userdetails = JsonConvert.DeserializeObject(json);
 
-                    var indResult = ParseJsonToDictionary(jsonRelationships);
+                    var indResult = ParseJsonToDictionary(json);
                     var dataList = GetList(indResult["dataList"]);
                     var individual = GetDictionary(dataList[0]);
 
@@ -660,8 +660,8 @@ namespace ShowIssueTracker.Authorization
             try
             {
                 var managerEmail = "";
-                var token = await GetImpexiumAccessToken(); // ReadfileAndReturnString();
-
+                var token = ReadfileAndReturnString();
+               
                 var p = token.Split('|');
                 var accessToken = p[0];
                 var apiEndPoint = p[1];
@@ -820,7 +820,7 @@ namespace ShowIssueTracker.Authorization
       
         public async Task<string> findUserByEmailInImpexium(string email)
         {
-            var token = await GetImpexiumAccessToken(); //ReadfileAndReturnString();
+            var token = ReadfileAndReturnString();
 
             var p = token.Split('|');
             var accessToken = p[0];
