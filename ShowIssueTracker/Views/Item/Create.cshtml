@@ -6,102 +6,112 @@
 }
 <div id="uploadingData"></div>
 <form method="post" enctype="multipart/form-data" asp-controller="Item" asp-action="Create" id="submitForm" class="form" data-toggle="validator">
-    <div class="margin10">
+    <div class="row card-content margin10">
+      
         <div class="col-md-12" id="top">
-            <h4 class="align-center">Show Issue Report Form</h4>
+            <h4 class="align-center">Report an issue with the NADA Virtual Show</h4>
 
             <div style="width:auto;background:#fff" id="divProgress">
                 <div id="progress" style="background: #fff; height: 20px;width:0"></div>
             </div>
+            @if (!ViewBag.fullname)
+            {
 
-            <div class="form-group col-xs-12">
-                <label for="FullName">Full name</label>
-                <input type="text" class="form-control" id="FullName" asp-for="FullName" required>
+                <field css-class-width="col s12 m12 l12">
+                    <label for="FullName">Full name</label>
+                    <input type="text" class="form-control" id="FullName" asp-for="FullName" required>
+                </field>
+            }
+
+            @if (!ViewBag.email)
+            {
+                <field css-class-width="col s12 m12 l12">
+                    <label for="Email">Email</label>
+                    <input type="email" class="form-control" id="Email" asp-for="Email" required>
+                </field>
+            }
+
+                <field css-class-width="col s12 m12 l12">
+                    <label for="Issue">Issue Name</label>
+                    <input type="text" class="form-control" id="Issue" required asp-for="Issue">
+                </field>
+
+                <field css-class-width="col s12 m12 l12">
+                    <label><h6> What is your role at this meeting?</h6></label>
+                </field>
+                <field css-class-width="col s12 m12 l12">
+                    <input type="radio" name="Role" asp-for="Role" value="I am an Attendee" id="Attendee" />
+                    <label for="Attendee">I am an Attendee</label>
+                    <input type="radio" name="Role" asp-for="Role" value="I am an Exhibitor" id="Exhibitor" />
+                    <label for="Exhibitor">I am an Exhibitor</label>
+                    <input type="radio" name="Role" asp-for="Role" value="I am a Speaker or Presenter" id="Speaker" />
+                    <label for="Speaker">I am a Speaker or Presenter</label>
+
+
+                </field>
+                <br /><br />
+
+                <field css-class-width="col s12 m12 l12">
+                    <label><h6>What kind of issue are you reporting?</h6></label>
+                </field>
+                <field css-class-width="col s12 m12 l12">
+                    <input type="radio" name="IssueType" asp-for="IssueType" value="A Registration problem" id="Registration" class="form-control" />
+                    <label for="Registration">A Registration problem</label>
+
+                    <input type="radio" name="IssueType" asp-for="IssueType" value="Problem with Chat functionality" id="Chat" />
+                    <label for="Chat">Problem with Chat functionality</label>
+
+                    <input type="radio" name="IssueType" asp-for="IssueType" value="Problem with Network Now" id="Network" />
+                    <label for="Network">Problem with Network Now</label>
+
+                    <input type="radio" name="IssueType" asp-for="IssueType" value="Violation of Code of Conduct" id="Violation" />
+                    <label for="Violation">Violation of Code of Conduct</label>
+
+                    <input type="radio" name="IssueType" asp-for="IssueType" value="Other" id="Other" />
+                    <label for="Other">Other</label>
+
+
+                </field>
+                <br /><br />
+                <field css-class-width="col s12 m12 l12">
+                    <label for="Description"><h6>Describe the issue</h6></label>
+                    <textarea type="text" class="form-control " id="Description" required asp-for="Description" rows="3"> </textarea>
+                </field>
+
+                <br />
+
+                <field css-class-width="col s12 m12 l12">
+                    <label for="fUpload"><h6>Upload files </h6></label>
+                </field>
+                <field css-class-width="col s12 m12 l12">
+
+                    <input type="file" accept="/*" name="files" multiple id="fUpload" maxlength="1000000000" class="form-control-file" />
+
+                </field>
+
+
+                <div class="form-group col-xs-12" style="text-align:center;">
+                    <input type="submit" class="btn btn-danger btn-lg" id="file" />
+
+                </div>
             </div>
-            <div class="form-group col-xs-12">
-                <label for="Email">Email</label>
-                <input type="email" class="form-control" id="Email" asp-for="Email" required>
-            </div>
+     </div>
+        <script type="text/javascript">
 
+            var uploadField = document.getElementById("fUpload");
 
-            <div class="form-group col-xs-12">
-                <label for="Issue">Issue Name</label>
-                <input type="text" class="form-control" id="Issue" required asp-for="Issue">
-            </div>
-
-            <div class="form-group col-xs-12">
-                <label> What is your role at this meeting?</label>
-            </div>
-            <div class="form-group col-xs-12">
-                <input type="radio" name="Role" asp-for="Role" value="I am an Attendee" id="Attendee" />
-                <label for="Attendee">I am an Attendee</label>
-                <input type="radio" name="Role" asp-for="Role" value="I am an Exhibitor" id="Exhibitor" />
-                <label for="Exhibitor">I am an Exhibitor</label>
-                <input type="radio" name="Role" asp-for="Role" value="I am a Speaker or Presenter" id="Speaker" />
-                <label for="Speaker">I am a Speaker or Presenter</label>
-
-
-            </div>
-            <div class="form-group col-xs-12">
-                <label>What kind of issue are you reporting?</label>
-            </div>
-            <div class="form-group col-xs-12">
-                <input type="radio" name="IssueType" asp-for="IssueType" value="A Registration problem" id="Registration" class="form-control" />
-                <label for="Registration">A Registration problem</label>
-
-                <input type="radio" name="IssueType" asp-for="IssueType" value="Problem with Chat functionality" id="Chat" />
-                <label for="Chat">Problem with Chat functionality</label>
-
-                <input type="radio" name="IssueType" asp-for="IssueType" value="Problem with Network Now" id="Network" />
-                <label for="Network">Problem with Network Now</label>
-
-                <input type="radio" name="IssueType" asp-for="IssueType" value="Violation of Code of Conduct" id="Violation" />
-                <label for="Violation">Violation of Code of Conduct</label>
-
-                <input type="radio" name="IssueType" asp-for="IssueType" value="Other" id="Other" />
-                <label for="Other">Other</label>
-
-
-            </div>
-            <div class="form-group col-xs-12">
-                <label for="Description">Describe the issue</label>
-                <textarea type="text" class="form-control " id="Description" required asp-for="Description" rows="3"> </textarea>
-            </div>
-
-
-
-            <div class="form-group col-xs-12">
-                <label for="fUpload">Upload files </label>
-            </div>
-            <div class="form-group col-xs-12">
-           
-                <input type="file" accept="/*" name="files" multiple id="fUpload" maxlength="1000000000" class="form-control-file" />
-
-            </div>
-
-
-            <div class="form-group col-xs-12" style="text-align:center;">
-                <input type="submit" class="btn btn-danger btn-lg" id="file" />
-
-            </div>
-        </div>
- </div>
-    <script type="text/javascript">
-
-        var uploadField = document.getElementById("fUpload");
-
-        uploadField.onchange = function () {
-            if (this.files[0].size > 2000000000) {
-                alert("Uploaded File is grater than 2GB ");
-                this.value = "";
-                return false;
+            uploadField.onchange = function () {
+                if (this.files[0].size > 2000000000) {
+                    alert("Uploaded File is grater than 2GB ");
+                    this.value = "";
+                    return false;
+                };
             };
-        };
-    </script>
+        </script>
 </form>
 
 
-<div id="loading">
+<div id="loading" style="visibility:hidden;">
     <img id="loading-image" alt="Loading..." />
 </div>
 <div style="display:none">
@@ -110,8 +120,7 @@
 
 <script type="text/javascript">
 
-    $(function () {
-
+    $(document).ready(function () {
         $('#loading').hide();
         $('form').submit(function () {
 
@@ -150,15 +159,8 @@
     function addText() {
         // console.log("addText");
 
-        //  var text = '<span class="popUp"><strong><h1>Uploading Video...</h1><h7>Please do not close this browser window.<br/></h7> <h7>This may take several minutes, depending on file size.</h7></p>';
-        //  document.getElementById('uploadingData').innerHTML  = text;
+        var text = '<span class="popUp"><strong><h1>Uploading...</h1><h7>Please do not close this browser window.<br/></h7> <h7>This may take several minutes, depending on file size.</h7></p>';
+       document.getElementById('uploadingData').innerHTML  = text;
     }
 </script>
-
-<style>
-    
-</style>
-
-<script>
-    
-</script>
+ 

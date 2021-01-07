@@ -74,6 +74,8 @@ namespace ShowIssueTracker.Controllers
         [ActionName("Create")]
         public async Task<IActionResult> CreateAsync()
         {
+            ViewBag.fullname = false;
+            ViewBag.email = false;
             Item item = new Item()
             {
                 EntryTime = DateTime.Today,
@@ -86,7 +88,8 @@ namespace ShowIssueTracker.Controllers
         [ActionName("Support")]
         public async Task<IActionResult> CreateAsync(string fullname, string email)
         {
-
+            ViewBag.fullname = false;
+            ViewBag.email = false ;
             Item item = new Item()
             {
                  FullName = fullname,
@@ -94,7 +97,15 @@ namespace ShowIssueTracker.Controllers
                  EntryTime = DateTime.Today, 
                  LastSavedTime = DateTime.Today
             };
+            if(fullname !=null)
+            {
+                ViewBag.fullname = true ;
+            }
 
+            if (email != null)
+            {
+                ViewBag.email = true;
+            }
             return View("Create", item);
         }
 

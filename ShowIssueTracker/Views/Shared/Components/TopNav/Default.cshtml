@@ -4,16 +4,21 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<div class="navbar-fixed">
-    <nav class="top-nav top-nav-admin">
-        <div class="nav-wrapper ">
+
+    <div class="bg-div">
+        <img src="~/images/2021ShowLogo.jpg" class="imgLogo logo-img" /> 
+        <nav>
 
             @if (SignInManager.IsSignedIn(User))
             {
 
-                <a href="#" data-activates="nav-mobile" class="button-collapse left-nav show-on-large"><i class="material-icons">menu</i></a>
+                <ul>
+                    <li><a class="waves-effect waves-light" href="/Item/Index">All Issues</a></li>
+                    <li><a class="waves-effect waves-light" href="/Item/Internal">Internal Issues</a></li>
+                    <li><a class="waves-effect waves-light" href="/Item/External">External Issues</a></li>
+                    <li><a class="waves-effect waves-light" href="/Item/Resolved">Resolved Issues</a></li>
 
-                <a class="page-title waves-effect">NADA Show Issue Tracker</a>
+                </ul>
                 <ul class="right hide-on-small-only">
 
                     <li><a class="waves-effect" href="/Account/Profile"><span class="display-name">@UserManager.GetUserName(User) </span><i class="material-icons right">person</i></a></li>
@@ -39,8 +44,66 @@
                     </li>
                 </ul>
             }
+            else
+            {
+        <ul class="right hide-on-small-only">
 
-        </div>
-    </nav>
-</div>
+            <li><a class="waves-effect waves-light" href="/Account/Login"><i class="material-icons">login</i>Login</a></li>
+        </ul>
+
+                <ul class="right side-nav side-nav-right" id="mobile-demo">
+
+                    <li><a class="waves-effect waves-light" href="/Account/Login"><i class="material-icons">login</i>Login</a></li>
+                  
+                </ul>
+            }
+
+        </nav>
+    </div>
+
+
+ 
+ 
+    
 <div class="container"></div>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-size: 15px;
+    }
+
+    /* Navigation */
+    nav {
+        float: left;
+        margin: 0;
+        overflow: hidden;
+        text-align: center;
+    }
+
+        nav ul {
+            margin: 0;
+            padding: 0;
+        }
+
+            nav ul li {
+                display: inline-block;
+                list-style-type: none;
+            }
+
+        nav > ul > li > a {
+          
+            text-decoration: none;
+        }
+
+    .logo-img {
+        float: left;
+        position: relative;
+        margin: 10px 15px 15px 10px;
+    }
+
+    .bg-div { 
+        overflow: hidden;
+    }
+</style> 
