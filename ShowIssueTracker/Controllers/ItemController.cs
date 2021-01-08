@@ -185,7 +185,15 @@ namespace ShowIssueTracker.Controllers
                     var emailProp = new SendEmail();
                     emailProp.Subject = _internalProp.secretCode;
                     emailProp.ToEmail = _internalProp.toAddress;
-                    var body = " <table> <tr><td>FirstName : "+ item.FullName+ "</td></tr> <tr><td>LastName : " + item.Issue + "</td></tr><tr><td>ContactEmail : " + item.IssueNotes + "</td></tr>  <tr><td>Video URL : " + item.BlobUrl + "</td></tr> </table> ";
+                    var body = " <table border=" + 1 + " cellpadding=" + 0 + " cellspacing=" + 0 + " width ='100%' > <tr><td>Full Name </td><td>"
+                    + item.FullName+ "</td></tr> <tr><td>Email </td><td>  " + item.Email 
+                    + "</td></tr><tr><td>Issue Name  </td><td>" + item.Issue 
+                    + "</td></tr>  <tr><td>What is your role at this meeting? </td><td>" + item.Role
+                      + "</td></tr>  <tr><td>What kind of issue are you reporting? </td><td>" + item.IssueType
+                        + "</td></tr>  <tr><td>Description </td><td>" + item.Description
+                         + "</td></tr>  <tr><td>Uploaded File </td><td>" + item.BlobUrl
+                    + "</td></tr> </table> ";
+
                     emailProp.Body = body;
                     emailProp.CCEmail = _internalProp.ccAddress;
                     var dataRtn = await SendEmail(emailProp);
