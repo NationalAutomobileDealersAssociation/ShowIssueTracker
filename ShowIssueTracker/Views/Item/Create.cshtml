@@ -10,7 +10,9 @@
       
         <div class="col-md-12" id="top">
             <h4 class="align-center">Report an issue with the NADA Virtual Show</h4>
-
+            <p>
+                Submit this form to report an issue you are having.  Your name an email address will be submitted with your report.  We will respond to your submission as soon as possible.  For a faster response use Live Chat to talk immediately with one of our solutions team members.
+            </p>
             <div style="width:auto;background:#fff" id="divProgress">
                 <div id="progress" style="background: #fff; height: 20px;width:0"></div>
             </div>
@@ -22,6 +24,10 @@
                     <input type="text" class="form-control" id="FullName" asp-for="FullName" required>
                 </field>
             }
+            else
+            {
+                <input type="text" class="form-control" id="FullName" asp-for="FullName" style="display:none;">
+            }
 
             @if (!ViewBag.email)
             {
@@ -30,71 +36,76 @@
                     <input type="email" class="form-control" id="Email" asp-for="Email" required>
                 </field>
             }
-
-                <field css-class-width="col s12 m12 l12">
-                    <label for="Issue">Issue Name</label>
-                    <input type="text" class="form-control" id="Issue" required asp-for="Issue">
-                </field>
-
-                <field css-class-width="col s12 m12 l12">
-                    <label><h6> What is your role at this meeting?</h6></label>
-                </field>
-                <field css-class-width="col s12 m12 l12">
-                    <input type="radio" name="Role" asp-for="Role" value="I am an Attendee" id="Attendee" />
-                    <label for="Attendee">I am an Attendee</label>
-                    <input type="radio" name="Role" asp-for="Role" value="I am an Exhibitor" id="Exhibitor" />
-                    <label for="Exhibitor">I am an Exhibitor</label>
-                    <input type="radio" name="Role" asp-for="Role" value="I am a Speaker or Presenter" id="Speaker" />
-                    <label for="Speaker">I am a Speaker or Presenter</label>
+            else
+            {
+                <input type="email" class="form-control" id="Email" asp-for="Email" style="display:none;">
+            }
 
 
-                </field>
-                <br /><br />
+            <field css-class-width="col s12 m12 l12">
+                <label for="Issue">Issue Name</label>
+                <input type="text" class="form-control" id="Issue" required asp-for="Issue">
+            </field>
 
-                <field css-class-width="col s12 m12 l12">
-                    <label><h6>What kind of issue are you reporting?</h6></label>
-                </field>
-                <field css-class-width="col s12 m12 l12">
-                    <input type="radio" name="IssueType" asp-for="IssueType" value="A Registration problem" id="Registration" class="form-control" />
-                    <label for="Registration">A Registration problem</label>
-
-                    <input type="radio" name="IssueType" asp-for="IssueType" value="Problem with Chat functionality" id="Chat" />
-                    <label for="Chat">Problem with Chat functionality</label>
-
-                    <input type="radio" name="IssueType" asp-for="IssueType" value="Problem with Network Now" id="Network" />
-                    <label for="Network">Problem with Network Now</label>
-
-                    <input type="radio" name="IssueType" asp-for="IssueType" value="Violation of Code of Conduct" id="Violation" />
-                    <label for="Violation">Violation of Code of Conduct</label>
-
-                    <input type="radio" name="IssueType" asp-for="IssueType" value="Other" id="Other" />
-                    <label for="Other">Other</label>
+            <field css-class-width="col s12 m12 l12">
+                <label><h6> What is your role at this meeting?</h6></label>
+            </field>
+            <field css-class-width="col s12 m12 l12">
+                <input type="radio" name="Role" asp-for="Role" value="I am an Attendee" id="Attendee" />
+                <label for="Attendee">I am an Attendee</label>
+                <input type="radio" name="Role" asp-for="Role" value="I am an Exhibitor" id="Exhibitor" />
+                <label for="Exhibitor">I am an Exhibitor</label>
+                <input type="radio" name="Role" asp-for="Role" value="I am a Speaker or Presenter" id="Speaker" />
+                <label for="Speaker">I am a Speaker or Presenter</label>
 
 
-                </field>
-                <br /><br />
-                <field css-class-width="col s12 m12 l12">
-                    <label for="Description"><h6>Describe the issue</h6></label>
-                    <textarea type="text" class="form-control " id="Description" required asp-for="Description" rows="3"> </textarea>
-                </field>
+            </field>
+            <br /><br />
 
-                <br />
+            <field css-class-width="col s12 m12 l12">
+                <label><h6>What kind of issue are you reporting?</h6></label>
+            </field>
+            <field css-class-width="col s12 m12 l12">
+                <input type="radio" name="IssueType" asp-for="IssueType" value="A Registration problem" id="Registration" class="form-control" />
+                <label for="Registration">A Registration problem</label>
 
-                <field css-class-width="col s12 m12 l12">
-                    <label for="fUpload"><h6>Upload files </h6></label>
-                </field>
-                <field css-class-width="col s12 m12 l12">
+                <input type="radio" name="IssueType" asp-for="IssueType" value="Problem with Chat functionality" id="Chat" />
+                <label for="Chat">Problem with Chat functionality</label>
 
-                    <input type="file" accept="/*" name="files" multiple id="fUpload" maxlength="1000000000" class="form-control-file" />
+                <input type="radio" name="IssueType" asp-for="IssueType" value="Problem with Network Now" id="Network" />
+                <label for="Network">Problem with Network Now</label>
 
-                </field>
+                <input type="radio" name="IssueType" asp-for="IssueType" value="Violation of Code of Conduct" id="Violation" />
+                <label for="Violation">Violation of Code of Conduct</label>
+
+                <input type="radio" name="IssueType" asp-for="IssueType" value="Other" id="Other" />
+                <label for="Other">Other</label>
 
 
-                <div class="form-group col-xs-12" style="text-align:center;">
-                    <input type="submit" class="btn btn-danger btn-lg" id="file" />
+            </field>
+            <br /><br />
+            <field css-class-width="col s12 m12 l12">
+                <label for="Description"><h6>Describe the issue</h6></label>
+                <textarea type="text" class="form-control " id="Description" required asp-for="Description" rows="3"> </textarea>
+            </field>
 
-                </div>
+            <br />
+
+            <field css-class-width="col s12 m12 l12">
+                <label for="fUpload"><h6>Upload files </h6></label>
+            </field>
+            <field css-class-width="col s12 m12 l12">
+
+                <input type="file" accept="/*" name="files" multiple id="fUpload" maxlength="1000000000" class="form-control-file" />
+
+            </field>
+
+
+            <div class="form-group col-xs-12" style="text-align:center;">
+                <input type="submit" class="btn btn-danger btn-lg" id="file" />
+
             </div>
+        </div>
      </div>
         <script type="text/javascript">
 
