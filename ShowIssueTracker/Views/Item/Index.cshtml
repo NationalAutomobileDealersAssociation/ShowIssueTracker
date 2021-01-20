@@ -123,14 +123,17 @@
                 "targets": [0, 1] 
             },
             {
-                className: 'center-align',
+                "defaultContent": "",
+                "searchable": true,
+                "orderable": true,
+                className: 'left-align',
                 "targets": 4
             },
             {
                 "defaultContent": "",
                 "searchable": true,
                 "orderable": true,
-                className: 'center-align',
+                className: 'left-align',
                 "targets": 5
             },
             {
@@ -138,8 +141,17 @@
                         return data;
                 },
                 "targets": 6,
-                "orderable": false,
-                className: 'noVis center-align',
+                "orderable": true,
+                className: '  left-align',
+                "width": "5%"
+            },
+            {
+                "render": function (data, type, full, row) {
+                    return data;
+                },
+                "targets": 7,
+                "orderable": true,
+                className: '  left-align',
                 "width": "5%"
             },
             {
@@ -163,7 +175,7 @@
                 },
                 "targets": 10,
                 "orderable": false,
-                className: 'noVis center-align',
+                className: 'noVis left-align',
                 "width": "5%"
             },
             {
@@ -177,7 +189,7 @@
                 },
                 "targets": 11,
                 "orderable": false,
-                className: 'noVis center-align',
+                className: 'noVis left-align',
                 "width": "5%"
             }
             //,{

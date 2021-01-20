@@ -741,3 +741,11 @@ Label {
     max-width: 95%;
     max-height: 100%;
 }
+
+table.dataTable.nowrap th, table.dataTable.nowrap td {
+    white-space: nowrap;
+    text-align: left;
+}
+.left-align {
+    text-align: left;
+}

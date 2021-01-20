@@ -92,6 +92,15 @@
                 "width": "5%"
             },
             {
+                "render": function (data, type, full, row) {
+                    return data;
+                },
+                "targets": 7,
+                "orderable": false,
+                className: 'noVis left-align',
+                "width": "5%"
+            },
+            {
                 "render": function (data) {
                     if (!isNaN(Date.parse(data))) {
                         var date = new Date(data);
