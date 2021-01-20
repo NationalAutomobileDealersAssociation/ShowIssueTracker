@@ -1,9 +1,13 @@
 ﻿@model ShowIssueTracker.Models.Item
+@{
+    ViewBag.Title = "NADA - Show Issue Tracker";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <h2>View Entry Details</h2>
 
 <div>
-    
+
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.FullName)
@@ -34,8 +38,8 @@
         <dd>
             @Html.DisplayFor(model => model.Email)
         </dd>
- 
-       
+
+
     </dl>
 </div>
 <p>

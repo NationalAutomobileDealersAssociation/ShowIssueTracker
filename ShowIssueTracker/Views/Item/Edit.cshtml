@@ -1,5 +1,10 @@
 ﻿@model ShowIssueTracker.Models.Item
 
+@{
+    ViewBag.Title = "NADA - Show Issue Tracker";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 
 @using (Html.BeginForm())
 {
@@ -108,11 +113,11 @@
 
 
                         @if (@Model.BlobUrl.ToUpper().Contains(".JPG") || @Model.BlobUrl.ToUpper().Contains(".PNG")
-                     || @Model.BlobUrl.ToUpper().Contains(".GIF") || @Model.BlobUrl.ToUpper().Contains(".WEBP")
-                     || @Model.BlobUrl.ToUpper().Contains(".TIFF") || @Model.BlobUrl.ToUpper().Contains(".PSD")
-                      || @Model.BlobUrl.ToUpper().Contains(".RAW") || @Model.BlobUrl.ToUpper().Contains(".BMP")
-                       || @Model.BlobUrl.ToUpper().Contains(".HEIF") || @Model.BlobUrl.ToUpper().Contains(".INDD")
-                        || @Model.BlobUrl.ToUpper().Contains(".JPEG") || @Model.BlobUrl.ToUpper().Contains(".SVG"))
+                   || @Model.BlobUrl.ToUpper().Contains(".GIF") || @Model.BlobUrl.ToUpper().Contains(".WEBP")
+                   || @Model.BlobUrl.ToUpper().Contains(".TIFF") || @Model.BlobUrl.ToUpper().Contains(".PSD")
+                    || @Model.BlobUrl.ToUpper().Contains(".RAW") || @Model.BlobUrl.ToUpper().Contains(".BMP")
+                     || @Model.BlobUrl.ToUpper().Contains(".HEIF") || @Model.BlobUrl.ToUpper().Contains(".INDD")
+                      || @Model.BlobUrl.ToUpper().Contains(".JPEG") || @Model.BlobUrl.ToUpper().Contains(".SVG"))
                         {
                             <img src="@Html.DisplayFor(model => model.BlobUrl)" alt="@Html.DisplayFor(model => model.FullName)" class="img" /><br />
                             <a href="@Html.DisplayFor(model => model.BlobUrl)" class="btn btn-danger btn-lg">Download the uploaded file.</a>
@@ -150,24 +155,24 @@
 
             </div>
 
-      
+
 
             @if (Model.AssignedTo == null)
             {
-        <div class="form-group col-xs-12">
-            <label for="AssignedTo">Assigned To</label>
-            <select asp-for="AssignedTo" id="AssignedToData">
-                <option value="" selected disabled>Please select a Person</option>
-            </select>
+                <div class="form-group col-xs-12">
+                    <label for="AssignedTo">Assigned To</label>
+                    <select asp-for="AssignedTo" id="AssignedToData">
+                        <option value="" selected disabled>Please select a Person</option>
+                    </select>
 
-            <input type="hidden" name="valueINeed" value="1" disabled   />
-        </div>
+                    <input type="hidden" name="valueINeed" value="1" disabled />
+                </div>
             }
             else
             {
                 <div class="form-group col-xs-12">
                     <label for="AssignedTo">Assigned To</label>
-                    <input type="text" class="form-control " id="Assigned2" required asp-for="AssignedTo"  disabled/>
+                    <input type="text" class="form-control " id="Assigned2" required asp-for="AssignedTo" disabled />
                 </div>
             }
 
