@@ -210,7 +210,7 @@ namespace ShowIssueTracker.Controllers
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
         //public async Task<ActionResult> EditAsync([Bind("Id,FullName,Email,Issue,Role,IssueType,Description,Status,AssignedTo,IssueNotes,isComplete,PublicUrl,EntryTime,LastSavedBy,LastSavedTime,Priority,BlobUrl")] Item item)
-        public async Task<ActionResult> EditAsync( Item item)
+        public async Task<ActionResult> EditAsync( Item item  )
         {
             var user = _userManager.GetUserName(User);
             if (user == null)
@@ -232,6 +232,23 @@ namespace ShowIssueTracker.Controllers
                 item.LastSavedTime = DateTime.Now;
 
                 await Respository.UpdateItemAsync(item.Id, item);
+                /////////if assingned new 
+             /*  if(valueINeed != "")
+                {
+
+              
+                var emailProp = new SendEmail();
+                emailProp.Subject = "A new Issue ticket assigned" ;
+                emailProp.ToEmail = user;
+                var body = " <h4> A new item is assiged to you on the Show Issue Tracker by   "
+                               + user + " </h4> <p>Issue Name   " + item.Issue  + "</p>";
+
+                emailProp.Body = body;
+                emailProp.CCEmail = item.AssignedTo;
+
+                var dataRtn = await SendEmail(emailProp);
+                }*/
+
                 return RedirectToAction("Index");
             }
 

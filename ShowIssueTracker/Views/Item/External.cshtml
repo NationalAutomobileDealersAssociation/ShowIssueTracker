@@ -52,6 +52,7 @@
             { sTitle: "Issue Type", mData: "IssueType" }, 
             //Display latest Status
             { sTitle: "Priority", mData: "Priority" }, 
+            { sTitle: "Assigned To", mData: "AssignedTo" }, 
             { sTitle: "Last Saved By", mData: "LastSavedBy" }, // Show Action List
             { sTitle: "Last Saved Time", mData: "LastSavedTime" },
 
@@ -69,9 +70,12 @@
                     }
                     return data;
                 },
-                "targets": [0, 1] 
+                "targets": [0, 1]
             },
             {
+                "defaultContent": "",
+                "searchable": true,
+                "orderable": true,
                 className: 'left-align',
                 "targets": 4
             },
@@ -84,11 +88,11 @@
             },
             {
                 "render": function (data, type, full, row) {
-                        return data;
+                    return data;
                 },
                 "targets": 6,
-                "orderable": false,
-                className: 'noVis left-align',
+                "orderable": true,
+                className: '  left-align',
                 "width": "5%"
             },
             {
@@ -96,8 +100,17 @@
                     return data;
                 },
                 "targets": 7,
-                "orderable": false,
-                className: 'noVis left-align',
+                "orderable": true,
+                className: '  left-align',
+                "width": "5%"
+            },
+            {
+                "render": function (data, type, full, row) {
+                    return data;
+                },
+                "targets": 8,
+                "orderable": true,
+                className: '  left-align',
                 "width": "5%"
             },
             {
@@ -108,7 +121,7 @@
                     }
                     return data;
                 },
-                "targets": [8, 9]
+                "targets": [9, 10]
             },
             {
                 "render": function (data, type, row) {
@@ -119,7 +132,7 @@
                     }
                     return '<a href=""></a>';
                 },
-                "targets": 10,
+                "targets": 11,
                 "orderable": false,
                 className: 'noVis left-align',
                 "width": "5%"
@@ -133,12 +146,23 @@
                     }
                     return '<a href=""></a>';
                 },
-                "targets": 11,
+                "targets": 12,
                 "orderable": false,
                 className: 'noVis left-align',
                 "width": "5%"
             }
-    ];
+            //,{
+            //    "targets": [10, 11],
+            //    "visible": false,
+            //    "searchable": true
+            //},
+            //{
+            //    "render": function (data) {
+            //        return (data === null || data === undefined) ? '-' : data;
+            //    },
+            //    "targets": '_all'
+            //},
+        ];
 
     </script>
 

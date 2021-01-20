@@ -23,6 +23,8 @@ namespace ShowIssueTracker.Authorization
     {
         Task<SignInResult> UserLoginToken(LoginViewModel model);
         Task<ApplicationUser> PostUserByPassingImpexiumEmail(string email);
+        Task<List<UserAccess>> GetListOfUsers(string searchText);
+        
     }
 
     public class ImpexiumLogin : IImpexiumLogin
@@ -39,6 +41,8 @@ namespace ShowIssueTracker.Authorization
             _env = env;
         }
 
+
+       
         [HttpGet]
         public string GeneratePassword()
         {
@@ -511,7 +515,7 @@ namespace ShowIssueTracker.Authorization
                     string lastName = dataListUser.lastName;
                     string email = dataListUser.email;
 
-                    
+
                     ///////////////////////////////////////////////////////////
 
                     List<object> usrCommittees = GetList(individual["committees"]);
@@ -543,6 +547,62 @@ namespace ShowIssueTracker.Authorization
             {
                 return SignInResult.Failed;
             }
+        }
+        public async Task<List<UserAccess>> GetListOfUsers(string searchText)
+        {
+            List<UserAccess> usersList = new List<UserAccess>();
+            try
+            {
+                var token = ReadfileAndReturnString();
+
+                var p = token.Split('|');
+                var accessToken = p[0];
+                var apiEndPoint = p[1];
+                string userEmail = _impexiumProperties.ApiAccessEmail;
+                string userPswd = _impexiumProperties.ApiAccessPassword;
+
+                var tokenList = await GetImpexiumUserToken(accessToken, apiEndPoint, userEmail, userPswd);
+
+                if (tokenList.Count >= 4)
+                {
+                    var appToken = tokenList[0];
+                    var userToken = tokenList[1];
+                    var baseUri = tokenList[2];
+                    var userId = tokenList[3];
+                    var findOrgs = "/Committees/ShowIssueTracker/Members/1?term=" + searchText;// " / Organizations/1?name=" + searchText;
+                    var headerDictionary = new Dictionary<string, string> {
+                        { "AppToken", appToken },
+                        { "UserToken", userToken }
+                    };
+                    var client = new RestClientNew(
+                        baseUri + findOrgs,
+                        HttpVerb.GET,
+                        null,
+                        headerDictionary);
+                    var json = await client.MakeRequest();
+
+                    // Parse Result
+                    var result = ParseJsonToDictionary(json);
+                    if (result != null && result.Count > 0 && result.ContainsKey("dataList"))
+                    {
+                        dynamic dResult = JsonConvert.DeserializeObject(json);
+                        List<object> dataList = GetList(result["dataList"]);
+                        for (int i = 0; i < dataList.Count; i++)
+                        {
+                       
+                            var dataListItem = dResult.dataList[i];
+                            var individual =(dataListItem["emails"][0]);
+                            UserAccess usssser = new UserAccess() { Id = individual.address, Name = dataListItem.firstName  + ' '  + dataListItem.lastName };
+                            usersList.Add(usssser);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return usersList;
         }
 
         public async Task<ApplicationUser> PostUserByPassingImpexiumEmail(string email)
@@ -857,6 +917,8 @@ namespace ShowIssueTracker.Authorization
                 return "";
             }
         }
+
+      
         public class Phone
         {
             public string number { get; set; }
