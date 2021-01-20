@@ -105,6 +105,7 @@
             //Display latest Status
             { sTitle: "Priority", mData: "Priority" }, 
             { sTitle: "Last Saved By", mData: "LastSavedBy" }, // Show Action List
+            { sTitle: "Last Saved Time", mData: "LastSavedTime" }, 
             { sTitle: "Edit", mData: "id" }, // View IDC Meeting Data
             { sTitle: "Delete", mData: "id" }  // Download Report
             //{ sTitle: "", mData: "id" }  // Delete Meeting 
@@ -142,6 +143,16 @@
                 "width": "5%"
             },
             {
+                "render": function (data) {
+                    if (!isNaN(Date.parse(data))) {
+                        var date = new Date(data);
+                        return moment(date).format('MM/DD/YY, ddd');
+                    }
+                    return data;
+                },
+                "targets": [8, 9]
+            },
+            {
                 "render": function (data, type, row) {
                     if (row['isGuest'] != true) {
                         return '<a class="waves-effect custom-text-blue2"  href="/Item/Edit/' +
@@ -150,7 +161,7 @@
                     }
                     return '<a href=""></a>';
                 },
-                "targets": 9,
+                "targets": 10,
                 "orderable": false,
                 className: 'noVis left-align',
                 "width": "5%"
@@ -164,7 +175,7 @@
                     }
                     return '<a href=""></a>';
                 },
-                "targets": 10,
+                "targets": 11,
                 "orderable": false,
                 className: 'noVis left-align',
                 "width": "5%"
