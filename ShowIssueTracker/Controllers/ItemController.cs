@@ -239,12 +239,12 @@ namespace ShowIssueTracker.Controllers
               
                 var emailProp = new SendEmail();
                 emailProp.Subject = "A new Issue ticket assigned" ;
-                emailProp.ToEmail = user;
+                emailProp.CCEmail = user;
                 var body = " <h4> A new item is assiged to you on the Show Issue Tracker by   "
                                + user + " </h4> <p>Issue Name   " + item.Issue  + "</p>";
 
                     emailProp.Body = body;
-                    emailProp.CCEmail = item.AssignedTo;
+                    emailProp.ToEmail = item.AssignedTo;
 
                 var dataRtn = await SendEmail(emailProp); 
                 } 
