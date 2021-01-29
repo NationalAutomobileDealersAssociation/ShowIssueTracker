@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc; 
-using Microsoft.AspNetCore.Http; 
-using Microsoft.Extensions.Configuration; 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
 using System.IO;
 using ShowIssueTracker.Models;
@@ -25,8 +25,8 @@ namespace ShowIssueTracker.Controllers
         private readonly IDocumentDBRepository<Item> Respository;
         private readonly INadaRepository _nadaRepository;
         private readonly InternalProperties _internalProp;
-        public ItemController(IDocumentDBRepository<Item> Respository, 
-            IConfiguration Configuration, INadaRepository nadaRepository, 
+        public ItemController(IDocumentDBRepository<Item> Respository,
+            IConfiguration Configuration, INadaRepository nadaRepository,
             IOptions<InternalProperties> internalProp, UserManager<ApplicationUser> userManager)
         {
             this.Respository = Respository;
@@ -36,11 +36,11 @@ namespace ShowIssueTracker.Controllers
             _userManager = userManager;
         }
 
-        
+
         [ActionName("Index")]
         public async Task<IActionResult> Index()
         {
-           
+
             var items = await Respository.GetItemsAsync(d => !d.Completed); //await Respository.GetItemsAsync(d => !d.Completed);
             return View(items);
         }
@@ -48,7 +48,7 @@ namespace ShowIssueTracker.Controllers
         [ActionName("Resolved")]
         public async Task<IActionResult> Resolved()
         {
-            var items = await Respository.GetItemsAsync(d => d.Completed ); //await Respository.GetItemsAsync(d => !d.Completed);
+            var items = await Respository.GetItemsAsync(d => d.Completed); //await Respository.GetItemsAsync(d => !d.Completed);
             return View(items);
         }
 
@@ -89,17 +89,17 @@ namespace ShowIssueTracker.Controllers
         public async Task<IActionResult> CreateAsync(string fullname, string email)
         {
             ViewBag.fullname = false;
-            ViewBag.email = false ;
+            ViewBag.email = false;
             Item item = new Item()
             {
-                 FullName = fullname,
-                Email =email,
-                 EntryTime = DateTime.Today, 
-                 LastSavedTime = DateTime.Today
+                FullName = fullname,
+                Email = email,
+                EntryTime = DateTime.Today,
+                LastSavedTime = DateTime.Today
             };
-            if(fullname !=null)
+            if (fullname != null)
             {
-                ViewBag.fullname = true ;
+                ViewBag.fullname = true;
             }
 
             if (email != null)
@@ -118,99 +118,99 @@ namespace ShowIssueTracker.Controllers
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         public async Task<ActionResult> CreateAsync(Item item, List<IFormFile> files)
         {
-                 //////////////
-                bool allVideosUploaded = false;
-                var i = 0;
-                var count = files.Count();
+            //////////////
+            bool allVideosUploaded = false;
+            var i = 0;
+            var count = files.Count();
 
-                if(count >0 )
+            if (count > 0)
+            {
+                foreach (var formFile in files)
                 {
-                    foreach (var formFile in files)
+
+                    var uploadSuccess = false;
+                    string uploadedUri = null;
+                    if (formFile.Length <= 0)
+                    {
+                        continue;
+                    }
+
+                    //OPTION B: read directly from stream for blob upload
+                    using (var stream = formFile.OpenReadStream())
                     {
 
-                        var uploadSuccess = false;
-                        string uploadedUri = null;
-                        if (formFile.Length <= 0)
+                        (uploadSuccess, uploadedUri) = await UploadToBlob(item.FullName.Trim() + i + (new Random()).Next(100, 1000) + formFile.FileName, null, stream);
+                        TempData["uploadedUri"] = uploadedUri;
+                        item.BlobUrl = uploadedUri;
+                        item.EntryTime = DateTime.Now;
+                        item.Status = "New";
+
+                        item.LastSavedBy = item.Email;
+                        item.LastSavedTime = DateTime.Now;
+
+
+                        i = i + 1;
+                        if (uploadSuccess)
+
                         {
-                            continue;
+                            await Respository.CreateItemAsync(item);
+                            // return View("UploadSuccess");
                         }
-                         
-                        //OPTION B: read directly from stream for blob upload
-                        using (var stream = formFile.OpenReadStream())
+                        else
                         {
-
-                            (uploadSuccess, uploadedUri) = await UploadToBlob(item.FullName.Trim() + i + (new Random()).Next(100, 1000) + formFile.FileName, null, stream);
-                            TempData["uploadedUri"] = uploadedUri;
-                            item.BlobUrl = uploadedUri;
-                            item.EntryTime = DateTime.Now;
-                            item.Status = "New";
-
-                            item.LastSavedBy = item.Email;
-                            item.LastSavedTime = DateTime.Now;
-
-
-                            i = i + 1;
-                            if (uploadSuccess)
-
-                            {
-                                await Respository.CreateItemAsync(item);
-                                // return View("UploadSuccess");
-                            }
-                            else
-                            {
-                                return View("UploadError");
-                            }
-                            if (i == count)
-                            {
-                                allVideosUploaded = true;
-                            }
+                            return View("UploadError");
                         }
-
+                        if (i == count)
+                        {
+                            allVideosUploaded = true;
+                        }
                     }
-                }
-                else
-                {
-                    item.BlobUrl = "No Files Uploaded";
-                    item.EntryTime = DateTime.Now;
-                    item.Status = "New";
-                    item.LastSavedBy = item.Email;
-                    item.LastSavedTime = DateTime.Now;
-                    await Respository.CreateItemAsync(item);
-                    allVideosUploaded = true;
-                }
 
-                if (allVideosUploaded)
-                 {
-                    /// send email 
-                    var emailProp = new SendEmail();
-                    emailProp.Subject = _internalProp.secretCode;
-                    emailProp.ToEmail = _internalProp.toAddress;
-                    var body = " <table border=" + 1 + " cellpadding=" + 0 + " cellspacing=" + 0 + " width ='100%' > <tr><td>Full Name </td><td>"
-                    + item.FullName+ "</td></tr> <tr><td>Email </td><td>  " + item.Email 
-                    + "</td></tr><tr><td>Issue Name  </td><td>" + item.Issue 
-                    + "</td></tr>  <tr><td>What is your role at this meeting? </td><td>" + item.Role
-                      + "</td></tr>  <tr><td>What kind of issue are you reporting? </td><td>" + item.IssueType
-                        + "</td></tr>  <tr><td>Description </td><td>" + item.Description
-                         + "</td></tr>  <tr><td>Uploaded File </td><td>" + item.BlobUrl
-                    + "</td></tr> </table> ";
+                }
+            }
+            else
+            {
+                item.BlobUrl = "No Files Uploaded";
+                item.EntryTime = DateTime.Now;
+                item.Status = "New";
+                item.LastSavedBy = item.Email;
+                item.LastSavedTime = DateTime.Now;
+                await Respository.CreateItemAsync(item);
+                allVideosUploaded = true;
+            }
 
-                    emailProp.Body = body;
-                    emailProp.CCEmail = _internalProp.ccAddress;
-                    var dataRtn = await SendEmail(emailProp);
-                    
-                   return View("UploadSuccess");
-                }
-                else
-                {
-                    return View("UploadError");
-                }
+            if (allVideosUploaded)
+            {
+                /// send email 
+                var emailProp = new SendEmail();
+                emailProp.Subject = _internalProp.secretCode;
+                emailProp.ToEmail = _internalProp.toAddress;
+                var body = " <table border=" + 1 + " cellpadding=" + 0 + " cellspacing=" + 0 + " width ='100%' > <tr><td>Full Name </td><td>"
+                + item.FullName + "</td></tr> <tr><td>Email </td><td>  " + item.Email
+                + "</td></tr><tr><td>Issue Name  </td><td>" + item.Issue
+                + "</td></tr>  <tr><td>What is your role at this meeting? </td><td>" + item.Role
+                  + "</td></tr>  <tr><td>What kind of issue are you reporting? </td><td>" + item.IssueType
+                    + "</td></tr>  <tr><td>Description </td><td>" + item.Description
+                     + "</td></tr>  <tr><td>Uploaded File </td><td>" + item.BlobUrl
+                + "</td></tr> </table> ";
+
+                emailProp.Body = body;
+                emailProp.CCEmail = _internalProp.ccAddress;
+                var dataRtn = await SendEmail(emailProp);
+
+                return View("UploadSuccess");
+            }
+            else
+            {
+                return View("UploadError");
+            }
         }
 
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
         //public async Task<ActionResult> EditAsync([Bind("Id,FullName,Email,Issue,Role,IssueType,Description,Status,AssignedTo,IssueNotes,isComplete,PublicUrl,EntryTime,LastSavedBy,LastSavedTime,Priority,BlobUrl")] Item item)
-        public async Task<ActionResult> EditAsync( Item item  )
+        public async Task<ActionResult> EditAsync(Item item)
         {
             var user = _userManager.GetUserName(User);
             if (user == null)
@@ -219,35 +219,42 @@ namespace ShowIssueTracker.Controllers
             }
             if (ModelState.IsValid)
             {
-                if(item.Status == "Resolved" || item.Status == "No Action Required")
+                if (item.Status == "Resolved" || item.Status == "No Action Required")
                 {
-                    item.Completed = true; 
+                    item.Completed = true;
                 }
                 else
                 {
-                    item.Completed = false; 
+                    item.Completed = false;
                 }
 
-                item.LastSavedBy = user; 
+                item.LastSavedBy = user;
                 item.LastSavedTime = DateTime.Now;
 
                 await Respository.UpdateItemAsync(item.Id, item);
                 /////////if assingned new 
-                if(item.valueINeed != "0")
+                if (item.valueINeed != "0")
                 {
 
-              
-                var emailProp = new SendEmail();
-                emailProp.Subject = "A new Issue ticket assigned" ;
-                emailProp.CCEmail = user;
-                var body = " <h4> A new item is assiged to you on the Show Issue Tracker by   "
-                               + user + " </h4> <p>Issue Name   " + item.Issue  + "</p>";
+                    try
+                    {
+                        var emailProp = new SendEmail();
+                        emailProp.Subject = "A new Issue ticket assigned";
+                        emailProp.CCEmail = user;
+                        var body = " <h4> A new item is assiged to you on the Show Issue Tracker by   "
+                                       + user + " </h4> <p>Issue Name   " + item.Issue + "</p>";
 
-                    emailProp.Body = body;
-                    emailProp.ToEmail = item.AssignedTo;
+                        emailProp.Body = body;
+                        emailProp.ToEmail = item.AssignedTo;
 
-                var dataRtn = await SendEmail(emailProp); 
-                } 
+                        var dataRtn = await SendEmail(emailProp);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                }
 
                 return RedirectToAction("Index");
             }
@@ -264,7 +271,7 @@ namespace ShowIssueTracker.Controllers
             }
 
             Item item = await Respository.GetItemAsync(id);
-            
+
             if (item == null)
             {
                 return NotFound();

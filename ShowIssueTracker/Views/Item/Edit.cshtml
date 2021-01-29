@@ -161,11 +161,11 @@
             {
                 <div class="form-group col-xs-12">
                     <label for="AssignedTo">Assigned To</label>
-                    <select asp-for="AssignedTo" id="AssignedToData">
+                    <select asp-for="AssignedTo" id="AssignedToData" required>
                         <option value="" selected disabled>Please select a Person</option>
                     </select>
 
-                    <input type="hidden" name="valueINeed" value="1" disabled />
+                    <input type="hidden" name="valueINeed" value="1" disabled asp-for="valueINeed"/>
                 </div>
             }
             else
@@ -174,7 +174,7 @@
             <label for="AssignedTo">Assigned To</label>
             <input type="text" class="form-control " id="Assigned2" required asp-for="AssignedTo" disabled />
 
-            <input type="hidden" name="valueINeed" value="0" disabled />
+            <input type="hidden" name="valueINeed" value="0" disabled asp-for="valueINeed"/>
         </div>
             }
 
