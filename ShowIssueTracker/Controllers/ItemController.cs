@@ -233,7 +233,7 @@ namespace ShowIssueTracker.Controllers
 
                 await Respository.UpdateItemAsync(item.Id, item);
                 /////////if assingned new 
-             /*  if(valueINeed != "")
+                if(item.valueINeed != "0")
                 {
 
               
@@ -243,11 +243,11 @@ namespace ShowIssueTracker.Controllers
                 var body = " <h4> A new item is assiged to you on the Show Issue Tracker by   "
                                + user + " </h4> <p>Issue Name   " + item.Issue  + "</p>";
 
-                emailProp.Body = body;
-                emailProp.CCEmail = item.AssignedTo;
+                    emailProp.Body = body;
+                    emailProp.CCEmail = item.AssignedTo;
 
-                var dataRtn = await SendEmail(emailProp);
-                }*/
+                var dataRtn = await SendEmail(emailProp); 
+                } 
 
                 return RedirectToAction("Index");
             }

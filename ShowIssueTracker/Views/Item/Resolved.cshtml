@@ -94,21 +94,23 @@
                 (function () { window.location.href = '@Url.Action("Index", "Meetings")?id=' + id; }));
         }
 
+
         var meetingCols = [
+            { sTitle: "Edit", mData: "id" }, // View IDC Meeting Data
             { sTitle: "Entry Time", mData: "EntryTime" },
             { sTitle: "Full Name", mData: "FullName" },
             { sTitle: "Email", mData: "Email" },
             { sTitle: "Issue", mData: "Issue" },
             { sTitle: "Status", mData: "Status" },
-            { sTitle: "Role", mData: "Role" }, 
-            { sTitle: "Issue Type", mData: "IssueType" }, 
+            { sTitle: "Role", mData: "Role" },
+            { sTitle: "Issue Type", mData: "IssueType" },
             //Display latest Status
-            { sTitle: "Priority", mData: "Priority" }, 
-            { sTitle: "Assigned To", mData: "AssignedTo" }, 
+            { sTitle: "Priority", mData: "Priority" },
+            { sTitle: "Assigned To", mData: "AssignedTo" },
+
             { sTitle: "Last Saved By", mData: "LastSavedBy" }, // Show Action List
             { sTitle: "Last Saved Time", mData: "LastSavedTime" },
 
-            { sTitle: "Edit", mData: "id" }, // View IDC Meeting Data
             { sTitle: "Delete", mData: "id" }  // Download Report
             //{ sTitle: "", mData: "id" }  // Delete Meeting 
         ];
@@ -122,14 +124,7 @@
                     }
                     return data;
                 },
-                "targets": [0, 1]
-            },
-            {
-                "defaultContent": "",
-                "searchable": true,
-                "orderable": true,
-                className: 'left-align',
-                "targets": 4
+                "targets": [1, 2]
             },
             {
                 "defaultContent": "",
@@ -139,13 +134,11 @@
                 "targets": 5
             },
             {
-                "render": function (data, type, full, row) {
-                    return data;
-                },
-                "targets": 6,
+                "defaultContent": "",
+                "searchable": true,
                 "orderable": true,
-                className: '  left-align',
-                "width": "5%"
+                className: 'left-align',
+                "targets": 6
             },
             {
                 "render": function (data, type, full, row) {
@@ -166,6 +159,15 @@
                 "width": "5%"
             },
             {
+                "render": function (data, type, full, row) {
+                    return data;
+                },
+                "targets": 9,
+                "orderable": true,
+                className: '  left-align',
+                "width": "5%"
+            },
+            {
                 "render": function (data) {
                     if (!isNaN(Date.parse(data))) {
                         var date = new Date(data);
@@ -173,7 +175,7 @@
                     }
                     return data;
                 },
-                "targets": [9, 10]
+                "targets": [10, 11]
             },
             {
                 "render": function (data, type, row) {
@@ -184,7 +186,7 @@
                     }
                     return '<a href=""></a>';
                 },
-                "targets": 11,
+                "targets": 0,
                 "orderable": false,
                 className: 'noVis left-align',
                 "width": "5%"

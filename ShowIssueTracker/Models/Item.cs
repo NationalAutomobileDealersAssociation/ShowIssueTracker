@@ -60,6 +60,9 @@ namespace ShowIssueTracker.Models
 
         [JsonProperty(PropertyName = "BlobUrl")]
         public string BlobUrl { get; set; }
+
+        [JsonProperty(PropertyName = "valueINeed")]
+        public string valueINeed { get; set; }
         
 
     }
