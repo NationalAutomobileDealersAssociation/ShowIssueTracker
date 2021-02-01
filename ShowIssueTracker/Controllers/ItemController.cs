@@ -245,9 +245,10 @@ namespace ShowIssueTracker.Controllers
                         var emailProp = new SendEmail();
                         emailProp.Subject = "A new Show support issue has been assigned to you";
                         emailProp.CCEmail = user;
-                        var body = " <h4> A new item is assiged to you on the Show Issue Tracker by   "
-                                       + user + " </h4> <p>Issue Name   " + item.Issue + "</p>";
-
+                        var body = " <h4> A new item is assigned to you on the Show Issue Tracker by   "
+                                       + user + " </h4> <p>Issue Name   " + item.Issue + "</p>" +
+                                       " <p><a href=https://nadatracker.azurewebsites.net/Item/Edit/"+ item.Id +"> View the issue </a>";
+                         
                         emailProp.Body = body;
                         emailProp.ToEmail = item.AssignedTo;
 
