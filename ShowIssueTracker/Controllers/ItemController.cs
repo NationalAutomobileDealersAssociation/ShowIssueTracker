@@ -237,7 +237,7 @@ namespace ShowIssueTracker.Controllers
 
                 await Respository.UpdateItemAsync(item.Id, item);
                 /////////if assingned new 
-                if (itemExisting.AssignedTo == "")
+                if (itemExisting.AssignedTo == "" || itemExisting.AssignedTo != item.AssignedTo)
                 {
 
                     try
