@@ -24,6 +24,7 @@
         @Html.HiddenFor(model => model.Description)
         @Html.HiddenFor(model => model.BlobUrl)
         @Html.HiddenFor(model => model.EntryTime)
+         
 
     </div>
 
@@ -157,24 +158,26 @@
 
 
 
-            @if (Model.AssignedTo == null)
+            @if (Model.AssignedTo != null)
             {
-                <div class="form-group col-xs-12">
-                    <label for="AssignedTo">Assigned To</label>
-                    <select asp-for="AssignedTo" id="AssignedToData" required>
-                        <option value="" selected disabled>Please select a Person</option>
-                    </select>
+        <div class="form-group col-xs-12">
+            <label for="AssignedTo">AssignedTo</label>
+            @*<input type="text" class="form-control" id="AssignedTo" asp-for="AssignedTo" required disabled>*@
+            <select asp-for="AssignedTo" id="AssignedToData" required>
+                <option value=""  disabled>Please select a Person</option>
+                <option value="@Model.AssignedTo" selected>@Model.AssignedTo</option>
+            </select> 
+        </div>
 
-                    <input type="hidden" name="valueINeed" value="1" disabled asp-for="valueINeed"/>
-                </div>
             }
             else
             {
         <div class="form-group col-xs-12">
             <label for="AssignedTo">Assigned To</label>
-            <input type="text" class="form-control " id="Assigned2" required asp-for="AssignedTo" disabled />
-
-            <input type="hidden" name="valueINeed" value="0" disabled asp-for="valueINeed"/>
+            <select asp-for="AssignedTo" id="AssignedToData" required>
+                <option value="" selected disabled>Please select a Person</option>
+            </select>
+             
         </div>
             }
 
@@ -182,7 +185,7 @@
 
             <div class="form-group col-xs-12">
                 <label for="IssueNotes">Issue Notes</label>
-                <textarea type="text" class="form-control " id="IssueNotes"   asp-for="IssueNotes" rows="4"> </textarea>
+                <textarea type="text" class="form-control " id="IssueNotes" asp-for="IssueNotes" rows="4"> </textarea>
             </div>
 
 
@@ -210,21 +213,8 @@
             </div>
         </div>
     </div>
-    @*<script type="text/javascript">
-
-            var uploadField = document.getElementById("fUpload");
-
-            uploadField.onchange = function () {
-                if (this.files[0].size > 2000000000) {
-                    alert("Uploaded File is grater than 2GB ");
-                    this.value = "";
-                    return false;
-                };
-            };
-        </script>*@
-
-
-
+  
+     
 }
 
 <div>
